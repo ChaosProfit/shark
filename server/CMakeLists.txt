@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.2)
+
+PROJECT(sharkd)
+
+INCLUDE_DIRECTORIES(./)
+
+AUX_SOURCE_DIRECTORY(./ SRC)
+
+ADD_EXECUTABLE(sharkd ${SRC})
+
+#set_property(TARGET sharkd PROPERTY COMPILE_OPTIONS "-pthread")
+#TARGET_LINK_LIBRARIES(sharkd "${CMAKE_THREAD_LIBS_INIT}")
+TARGET_LINK_LIBRARIES(sharkd pthread)

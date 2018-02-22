@@ -1,0 +1,8 @@
+type:
+	build
+	run
+	exec 
+
+{"type":"exec","containerId":"","execBinPath":""}
+{"type":"","execBinPath":""}
+{"type":"","execBinPath":""}

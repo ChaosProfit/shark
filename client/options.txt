@@ -1,0 +1,3 @@
+-t --type command type.
+-c --containerId the container Id.
+-e --execBin the absolute path of exec bin.

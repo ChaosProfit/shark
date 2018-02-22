@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.2)
+
+PROJECT(shark)
+
+INCLUDE_DIRECTORIES(./)
+
+AUX_SOURCE_DIRECTORY(./ SRC)
+
+ADD_EXECUTABLE(shark ${SRC})
+
+
+TARGET_LINK_LIBRARIES(shark)

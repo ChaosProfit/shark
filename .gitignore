@@ -1,0 +1,8 @@
+.cproject
+.project
+.settings
+server/Debug
+server/Release
+client/Debug
+client/Release
+server/utils/rapidjson
