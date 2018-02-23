@@ -113,3 +113,20 @@ int cmdExecSync(const char *format ,...)
 	sharkLog(SHARK_LOG_DEBUG, "cmdExecSync finished\n");
 	return 0;
 }
+
+
+int dirInit(){
+	DIR *pd_var_dir = NULL;
+
+	pd_var_dir = opendir(SharkdParentDir);
+	if(pd_var_dir == NULL){
+		if(mkdir(SharkdParentDir, 0777) < 0){
+			sharkLog(SHARK_LOG_ERR, "mkdir %s error\n", SharkdParentDir);
+			return -1;
+		}
+	}
+	else{
+		closedir(pd_var_dir);
+	}
+	return 0;
+}

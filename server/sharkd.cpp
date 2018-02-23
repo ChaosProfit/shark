@@ -11,6 +11,7 @@
 #include "utils/sepoll.hpp"
 #include "utils/daemon.hpp"
 #include "utils/log.hpp"
+#include "utils/misc.hpp"
 
 int shark::Sharkd::run(){
 	while(1){
@@ -20,13 +21,11 @@ int shark::Sharkd::run(){
 	return 0;
 }
 
-shark::Sharkd::Sharkd(){
-	dirInit();
+shark::Sharkd::Sharkd(SharkConfig &cfg): sCfg(cfg){
 
-	gConfig = new GlobalConfig();
-	containerPool = new ContainerPool(*gConfig);
+	containerPool = new ContainerPool(sCfg);
 	cliServer = new CliServer(*containerPool);
-	gNetwork = new GlobalNetwork(gConfig->getConfig()->nType);
+	gNetwork = new GlobalNetwork(sCfg.net);
 
 	sharkLog(SHARK_LOG_INFO, "Sharkd construct successfully\n");
 }
@@ -40,15 +39,19 @@ shark::Sharkd::~Sharkd(){
 }
 
 int main(int argc, char *argv[]){
+	dirInit();
 	sharkLogInit("/run/shark/sharkd.log");
 
+	shark::GlobalConfig *config = new shark::GlobalConfig();
+
 	daemonInit();
-	shark::Sharkd	*sharkd = new shark::Sharkd();
 
+	shark::Sharkd	*sharkd = new shark::Sharkd(*(config->getConfig()));
 	sharkdPtrStore(SHARKD_PTR_SAVE, sharkd);
-
 	sharkd->run();
 
 	delete sharkd;
+	delete config;
+
 	return 0;
 }

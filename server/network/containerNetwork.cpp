@@ -36,32 +36,32 @@ int shark::ContainerNetwork::bridgeExit(){
 	return ret;
 }
 
-shark::ContainerNetwork::ContainerNetwork(std::string &sId, NETWORK_TYPE nType):
-shortId(sId), nType(nType){
+shark::ContainerNetwork::ContainerNetwork(std::string &sId, NetworkConfig &cfg):
+shortId(sId), nCfg(cfg){
 
-	switch(nType){
+	switch(nCfg.type){
 	case NETWORK_BRIDGE:
 		bridgeInit();
 		break;
 	default:
-		sharkLog(SHARK_LOG_ERR, "container:%s, Unknown network type:%d\n", shortId.data(), nType);
+		sharkLog(SHARK_LOG_ERR, "container:%s, Unknown network type:%d\n", shortId.data(), nCfg.type);
 		break;
 	}
 
-	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d construct successfully\n", shortId.data(), nType);
+	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d construct successfully\n", shortId.data(), nCfg.type);
 	return;
 }
 
 shark::ContainerNetwork::~ContainerNetwork(){
-	switch(nType){
+	switch(nCfg.type){
 	case NETWORK_BRIDGE:
 		bridgeExit();
 		break;
 	default:
-		sharkLog(SHARK_LOG_ERR, "container:%s, Unknown network type:%d\n", shortId.data(), nType);
+		sharkLog(SHARK_LOG_ERR, "container:%s, Unknown network type:%d\n", shortId.data(), nCfg.type);
 		break;
 	}
 
-	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d, destruct successfully\n", shortId.data(), nType);
+	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d, destruct successfully\n", shortId.data(), nCfg.type);
 	return;
 }

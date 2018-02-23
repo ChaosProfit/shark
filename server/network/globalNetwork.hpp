@@ -8,21 +8,21 @@
 #ifndef NETWORK_GLOBALNETWORK_HPP_
 #define NETWORK_GLOBALNETWORK_HPP_
 
-#include "networkConfig.hpp"
+#include "config/globalConfig.hpp"
 
 namespace shark{
 
 #define SHARK_BRIDGE "shark0"
 	class GlobalNetwork{
 	public:
-		GlobalNetwork(NETWORK_TYPE nType);
+		GlobalNetwork(NetworkConfig &cfg);
 		~GlobalNetwork();
 
 	private:
 		int bridgeInit();
 		int bridgeExit();
 
-		NETWORK_TYPE nType;
+		NetworkConfig &nCfg;
 	};
 }
 

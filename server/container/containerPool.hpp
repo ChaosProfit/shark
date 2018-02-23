@@ -29,7 +29,7 @@ namespace shark {
 	public:
 		std::string cmdProcess(Command *cmd);
 
-		ContainerPool(GlobalConfig &gCfg);
+		ContainerPool(SharkConfig &cfg);
 		~ContainerPool();
 	private:
 		std::string listCmdProcess();
@@ -46,8 +46,7 @@ namespace shark {
 	private:
 		std::list<Container *> clist;
 		pthread_t containerThread = 0;
-		GlobalConfig &gConfig;
-
+		SharkConfig &sCfg;
 	};
 }
 

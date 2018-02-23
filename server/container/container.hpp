@@ -22,13 +22,13 @@
 #include "utils/threadQueue.hpp"
 #include "utils/command.hpp"
 #include "network/containerNetwork.hpp"
-#include "network/networkConfig.hpp"
 #include "containerConfig.hpp"
+#include "config/globalConfig.hpp"
 
 namespace shark {
 	class Container{
 	public:
-		Container(struct ContainerConfig &cfg);
+		Container(struct ContainerConfig &cCfg, SharkConfig &sCfg);
 		~Container();
 
 		int checkPoint();
@@ -42,7 +42,7 @@ namespace shark {
 		int cmdSend(std::string &execCmd);
 
 		std::string& getId(){
-			return cfg.id;
+			return cCfg.id;
 		};
 
 		int getReadPipe(){
@@ -57,7 +57,8 @@ namespace shark {
 
 		std::string id;
 		std::string nameSpace;
-		struct ContainerConfig cfg;
+		struct ContainerConfig cCfg;
+		SharkConfig &sCfg;
 		std::list<Process *> processList;
 
 		ContainerNetwork * cNetwork;

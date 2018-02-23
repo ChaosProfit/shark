@@ -29,11 +29,11 @@ int shark::GlobalNetwork::bridgeExit(){
 	return ret;
 }
 
-shark::GlobalNetwork::GlobalNetwork(NETWORK_TYPE nType):
-nType(nType){
+shark::GlobalNetwork::GlobalNetwork(NetworkConfig &cfg):
+nCfg(cfg){
 	int ret = 0;
 
-	switch(nType){
+	switch(nCfg.type){
 	case NETWORK_BRIDGE:
 		ret = bridgeInit();
 		break;
@@ -48,7 +48,7 @@ nType(nType){
 shark::GlobalNetwork::~GlobalNetwork(){
 	int ret = 0;
 
-	switch(nType){
+	switch(nCfg.type){
 	case NETWORK_BRIDGE:
 		ret = bridgeExit();
 		break;

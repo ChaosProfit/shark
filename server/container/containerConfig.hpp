@@ -11,15 +11,14 @@
 #include <string>
 #include <list>
 
-#include "network/networkConfig.hpp"
+#include "config/globalConfig.hpp"
+
 namespace shark{
 	struct ContainerConfig{
 		std::string id;
 		std::string execCmd;
 		std::string nameSpace;
 		std::string rootfsPath;
-//		std::list<RLimit> rLimitList;
-		NETWORK_TYPE nType;
 	};
 }
 

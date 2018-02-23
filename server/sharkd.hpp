@@ -20,12 +20,12 @@
 namespace shark{
 	class Sharkd{
 	public:
-		Sharkd();
+		Sharkd(SharkConfig &cfg);
 		~Sharkd();
 
 		int run();
 	private:
-		GlobalConfig *gConfig = NULL;
+		SharkConfig &sCfg;
 		ContainerPool *containerPool = NULL;
 		CliServer *cliServer = NULL;
 		GlobalNetwork *gNetwork = NULL;

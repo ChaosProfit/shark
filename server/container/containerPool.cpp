@@ -21,8 +21,8 @@
 #include "utils/log.hpp"
 #include "utils/json.hpp"
 
-shark::ContainerPool::ContainerPool(GlobalConfig &gCfg):
-gConfig(gCfg){
+shark::ContainerPool::ContainerPool(SharkConfig &cfg):
+sCfg(cfg){
 
 	sharkLog(SHARK_LOG_INFO, "ContainerPool construct successfully\n");
 	return;
@@ -133,10 +133,8 @@ int shark::ContainerPool::execContainer(struct Command &cmd){
 
 int shark::ContainerPool::createContainer(struct Command &cmd){
 	int ret = 0;
-	ContainerConfig &cConfig = cmd.cfg;
 
-	cConfig.nType = gConfig.getConfig()->nType;
-	Container *c = new Container(cmd.cfg);
+	Container *c = new Container(cmd.cfg, sCfg);
 
 	ret = c->start();
 	if(ret < 0){
