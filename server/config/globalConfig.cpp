@@ -59,7 +59,7 @@ int shark::GlobalConfig::optionProcess(int argc, char *argv[]){
 
 int shark::GlobalConfig::configLineProcess(char *line){
 //	std::regex reg("([\\w\\d-_.]*)([ ]+=[ ]+)([\\w\\d-_.]*)");
-	std::regex reg("([\\w-]+)([= ]+)([\\w\\d.]+)(\\n)");
+	std::regex reg("([\\w-]+)([= ]+)([\\w\\d./]+)(\\n)");
 	std::smatch match;
 
 	std::string input(line);
@@ -88,7 +88,8 @@ int shark::GlobalConfig::configLineProcess(char *line){
 		}
 	}
 	else if(key.compare("bridge-ip") == 0){
-		gConfig->net.bridgeIp = value;
+		gConfig->net.brIp4.str = value;
+		brIpv4Process(gConfig->net.brIp4);
 	}
 
 	return 0;
@@ -116,5 +117,45 @@ int shark::GlobalConfig::configRead(){
 	fclose(fPtr);
 
 	sharkLog(SHARK_LOG_DEBUG, "configRead successfully\n");
+	return 0;
+}
+
+int shark::GlobalConfig::brIpv4Process(BridgeIpv4 &ip){
+
+	int ret = sscanf(ip.str.data(), "%d.%d.%d.%d/%d",
+						&ip.addr.array[0], &ip.addr.array[1], &ip.addr.array[2], &ip.addr.array[3], &ip.mask);
+	if(ret == EOF){
+		sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, ipStr:%s\n", ip.str.data());
+		return -1;
+	}
+
+	if(ip.mask > 32){
+		sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, mask:%d\n", ip.mask);
+		return -1;
+	}
+
+	for(int index = 0; index < 4; index++){
+		if(ip.addr.array[index] > 255){
+			sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, ipStr:%s\n", ip.str.data());
+			return -1;
+		}
+	}
+
+	ip.broadcast.value = ip.addr.value;
+
+	for(int index = ip.mask; index >= 0; index--){
+		ip.broadcast.value |= (0x1 << index);
+	}
+
+	sharkLog(SHARK_LOG_DEBUG, "mask:%d\n",
+					ip.mask);
+
+	sharkLog(SHARK_LOG_DEBUG, "addr0:%d, addr1:%d, addr2:%d, addr3:%d\n",
+				ip.addr.array[0], ip.addr.array[1], ip.addr.array[2], ip.addr.array[3]);
+
+	sharkLog(SHARK_LOG_DEBUG, "br0:%d, br1:%d, br2:%d, br3:%d\n",
+			ip.broadcast.array[0], ip.broadcast.array[1], ip.broadcast.array[2], ip.broadcast.array[3]);
+
+	sharkLog(SHARK_LOG_DEBUG, "brIpv4Process successfully\n");
 	return 0;
 }

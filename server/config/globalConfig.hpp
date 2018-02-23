@@ -17,10 +17,22 @@ namespace shark{
 		NETWORK_BRIDGE,
 	} NETWORK_TYPE;
 
+	union Ipv4Addr{
+		unsigned int value;
+		unsigned char array[4];
+	};
+
+	typedef struct{
+		std::string str;
+		union Ipv4Addr addr;
+		union Ipv4Addr broadcast;
+		char mask;
+	} BridgeIpv4;
+
 	typedef struct{
 		NETWORK_TYPE type;
 		bool	ccFlag;
-		std::string bridgeIp;
+		BridgeIpv4	brIp4;
 	} NetworkConfig;
 
 	typedef struct{
@@ -32,6 +44,7 @@ namespace shark{
 		GlobalConfig();
 		~GlobalConfig();
 
+		int brIpv4Process(BridgeIpv4 &ip);
 		int optionProcess(int argc, char *argv[]);
 		SharkConfig* getConfig();
 	private:
@@ -42,10 +55,6 @@ namespace shark{
 		int configLineProcess(char *line);
 	};
 }
-
-
-
-
 
 
 #endif /* CONFIG_GLOBALCONFIG_HPP_ */
