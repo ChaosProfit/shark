@@ -11,7 +11,7 @@
 #include <string>
 #include <list>
 
-#include "config/globalConfig.hpp"
+#include "globalConfig.hpp"
 
 namespace shark{
 	struct ContainerConfig{
@@ -19,6 +19,8 @@ namespace shark{
 		std::string execCmd;
 		std::string nameSpace;
 		std::string rootfsPath;
+		std::string addrStr;
+		Ipv4Addr addr;
 	};
 }
 

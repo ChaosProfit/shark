@@ -48,10 +48,10 @@ static void sharkExit(){
 		delete sharkd;
 	}
 
-//	ret = rmDir(SharkdParentDir);
-//	if(ret < 0){
-//		sharkLog(SHARK_LOG_ERR, "rm %s failed\n", SharkdParentDir);
-//	}
+	ret = rmDir(SharkdParentDir);
+	if(ret < 0){
+		sharkLog(SHARK_LOG_ERR, "rm %s failed\n", SharkdParentDir);
+	}
 
 	sharkLog(SHARK_LOG_INFO, "Sharkd exit successfully\n");
 	exit(0);

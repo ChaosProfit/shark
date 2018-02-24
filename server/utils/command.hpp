@@ -14,7 +14,7 @@
 #include <list>
 #include <memory>
 
-#include "container/containerConfig.hpp"
+#include "config/containerConfig.hpp"
 
 namespace shark{
 	typedef enum {

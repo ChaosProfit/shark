@@ -19,17 +19,21 @@ namespace shark{
 		COMMAND_MAX
 	} COMMAND_TYPE;
 
-	struct Command{
+	typedef struct{
+		std::string ipAddr;
+	}Config;
+
+	typedef struct{
 		std::string id;
 		COMMAND_TYPE type;
-		//struct Config cfg;
+		Config cfg;
 		std::string execCmd;
-	};
+	} Command;
 
 	class Option{
 	public:
 		const char *process(int argc, char *argv[]);
-		struct Command& getCmd(){
+		Command& getCmd(){
 			return cmd;
 		};
 
@@ -41,9 +45,9 @@ namespace shark{
 		int listProcess(char *data);
 		int printHelp();
 
-		std::string cmdGenerate(struct Command &opt);
+		std::string cmdGenerate(Command &opt);
 
-		struct Command cmd;
+		Command cmd;
 		std::string jsonCmd;
 	};
 }

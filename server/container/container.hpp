@@ -22,8 +22,7 @@
 #include "utils/threadQueue.hpp"
 #include "utils/command.hpp"
 #include "network/containerNetwork.hpp"
-#include "containerConfig.hpp"
-#include "config/globalConfig.hpp"
+#include "config/containerConfig.hpp"
 
 namespace shark {
 	class Container{

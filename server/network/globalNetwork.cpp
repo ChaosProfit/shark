@@ -5,25 +5,138 @@
  *      Author: luguanglong
  */
 
+#include <fstream>
+
 #include "globalNetwork.hpp"
 #include "utils/misc.hpp"
 #include "utils/log.hpp"
 
+int shark::GlobalNetwork::flagGet(char *flagPath, int &value){
+	int ret = 0;
+
+	FILE *fPtr = fopen(flagPath, "r");
+	if(fPtr == NULL){
+		sharkLog(SHARK_LOG_ERR, "%s open failed\n", flagPath);
+		return -1;
+	}
+
+	char buf[36] = {0};
+	ret = fread(buf, 1, 36, fPtr);
+	if(ret < 0){
+		sharkLog(SHARK_LOG_ERR, "%s read failed\n", flagPath);
+		fclose(fPtr);
+		return -1;
+	}
+
+	fclose(fPtr);
+
+	value = atoi(buf);
+
+	sharkLog(SHARK_LOG_DEBUG, "get flag %d from %s\n", value, flagPath);
+	return ret;
+}
+
+int shark::GlobalNetwork::flagSet(char *flagPath, int value){
+	int ret = 0;
+
+	FILE *fPtr = fopen(flagPath, "w");
+	if(fPtr == NULL){
+		sharkLog(SHARK_LOG_ERR, "%s open failed\n", flagPath);
+		return -1;
+	}
+
+	char buf[36] = {0};
+	snprintf(buf, 36, "%d", value);
+
+	ret = fwrite(buf, 1, 36, fPtr);
+	if(ret < 0){
+		sharkLog(SHARK_LOG_ERR, "%s write failed\n", flagPath);
+		fclose(fPtr);
+		return -1;
+	}
+
+	fclose(fPtr);
+
+	sharkLog(SHARK_LOG_DEBUG, "set flag %d to %s\n", value, flagPath);
+	return ret;
+}
+
+int shark::GlobalNetwork::bridgeIptablesInit(){
+	int ret = 0;
+
+	flagGet("/proc/sys/net/ipv4/ip_forward", originalIpv4ForwardFlag);
+	flagSet("/proc/sys/net/ipv4/ip_forward", 1);
+
+	ret = cmdExecSync("iptables -t nat -N %s", sharkChain);
+	ret = cmdExecSync("iptables -t nat -A PREROUTING -m addrtype --dst-type LOCAL -j %s", sharkChain);
+	ret = cmdExecSync("iptables -t nat -A OUTPUT -m addrtype --dst-type LOCAL -j %s", sharkChain);
+	ret =cmdExecSync("iptables -t nat -A POSTROUTING -s %u.%u.%u.%u/%u ! -o %s -j MASQUERADE",
+						nCfg.bridge.addr.array[0], nCfg.bridge.addr.array[1], nCfg.bridge.addr.array[2],
+						nCfg.bridge.addr.array[3], nCfg.bridge.addrMask, nCfg.bridge);
+
+	if(nCfg.ccFlag == true){
+		ret = cmdExecSync("iptalbes -t filter -A FORWARD -i %s -o %s -j ACCEPT", nCfg.bridge.name, nCfg.bridge.name);
+	}
+	else{
+		ret = cmdExecSync("iptalbes -t filter -A FORWARD -i %s -o %s -j DROP", nCfg.bridge.name, nCfg.bridge.name);
+	}
+
+	sharkLog(SHARK_LOG_DEBUG, "bridgeIptablesInit successfully\n");
+	return ret;
+}
+
+int shark::GlobalNetwork::bridgeIptablesExit(){
+	int ret = 0;
+
+	if(nCfg.ccFlag == true){
+		ret = cmdExecSync("iptalbes -t filter -D FORWARD -i %s -o %s -j ACCEPT", nCfg.bridge.name, nCfg.bridge.name);
+	}
+	else{
+		ret = cmdExecSync("iptalbes -t filter -D FORWARD -i %s -o %s -j DROP", nCfg.bridge.name, nCfg.bridge.name);
+	}
+
+
+	ret =cmdExecSync("iptables -t nat -D POSTROUTING -s %u.%u.%u.%u/%u ! -o %s -j MASQUERADE",
+						nCfg.bridge.addr.array[0], nCfg.bridge.addr.array[1], nCfg.bridge.addr.array[2],
+						nCfg.bridge.addr.array[3], nCfg.bridge.addrMask, nCfg.bridge);
+
+	ret = cmdExecSync("iptables -t nat -D PREROUTING -m addrtype --dst-type LOCAL -j %s", sharkChain);
+	ret = cmdExecSync("iptables -t nat -D OUTPUT -m addrtype --dst-type LOCAL -j %s", sharkChain);
+
+
+	ret = cmdExecSync("iptables -t nat -D %s", sharkChain);
+
+	flagSet("/proc/sys/net/ipv4/ip_forward", originalIpv4ForwardFlag);
+
+	sharkLog(SHARK_LOG_DEBUG, "bridgeIptablesExit successfully\n");
+	return ret;
+}
+
 int shark::GlobalNetwork::bridgeInit(){
 	int ret = 0;
 
-	ret = cmdExecSync("ip link add name %s type bridge", SHARK_BRIDGE);
-	ret = cmdExecSync("ip link set %s up", SHARK_BRIDGE);
+	ret = cmdExecSync("ip link add name %s type bridge", nCfg.bridge.name);
+	ret = cmdExecSync("ip link set %s up", nCfg.bridge.name);
+	ret = cmdExecSync("ip addr add %d.%d.%d.%d/%d broadcast %d.%d.%d.%d dev %s",
+			nCfg.bridge.addr.array[0], nCfg.bridge.addr.array[1], nCfg.bridge.addr.array[2],
+			nCfg.bridge.addr.array[3], nCfg.bridge.addrMask,
+			nCfg.bridge.bdAddr.array[0], nCfg.bridge.bdAddr.array[1], nCfg.bridge.bdAddr.array[2],
+			nCfg.bridge.bdAddr.array[3],
+			nCfg.bridge.name);
 
-	sharkLog(SHARK_LOG_DEBUG, "Bridge init successfully\n");
+	ret = bridgeIptablesInit();
+
+	sharkLog(SHARK_LOG_DEBUG, "bridgeInit successfully\n");
 	return ret;
 }
 
 int shark::GlobalNetwork::bridgeExit(){
 	int ret = 0;
 
-	ret = cmdExecSync("ip link set %s down", SHARK_BRIDGE);
-	ret = cmdExecSync("ip link del name %s type bridge", SHARK_BRIDGE);
+	ret = bridgeIptablesExit();
+
+	ret = cmdExecSync("ip link set %s down", nCfg.bridge.name);
+	ret = cmdExecSync("ip link del dev bridge", nCfg.bridge.name);
 
 	sharkLog(SHARK_LOG_DEBUG, "Bridge exit successfully\n");
 	return ret;
@@ -32,6 +145,11 @@ int shark::GlobalNetwork::bridgeExit(){
 shark::GlobalNetwork::GlobalNetwork(NetworkConfig &cfg):
 nCfg(cfg){
 	int ret = 0;
+
+	if(cfg.enable == false){
+		sharkLog(SHARK_LOG_DEBUG, "Network construct finished, disabled\n");
+		return;
+	}
 
 	switch(nCfg.type){
 	case NETWORK_BRIDGE:
@@ -47,6 +165,11 @@ nCfg(cfg){
 
 shark::GlobalNetwork::~GlobalNetwork(){
 	int ret = 0;
+
+	if(nCfg.enable == false){
+		sharkLog(SHARK_LOG_DEBUG, "Network destruct finished, disabled\n");
+		return;
+	}
 
 	switch(nCfg.type){
 	case NETWORK_BRIDGE:

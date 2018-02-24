@@ -19,10 +19,17 @@ namespace shark{
 		~GlobalNetwork();
 
 	private:
+		int flagGet(char *flagPath, int &value);
+		int flagSet(char *flagPath, int value);
+		int bridgeIptablesInit();
+		int bridgeIptablesExit();
 		int bridgeInit();
 		int bridgeExit();
 
 		NetworkConfig &nCfg;
+
+		const char sharkChain[32] = "SHARK";
+		int originalIpv4ForwardFlag = 0;
 	};
 }
 

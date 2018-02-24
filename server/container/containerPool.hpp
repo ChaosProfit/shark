@@ -21,8 +21,7 @@
 #include "process/process.hpp"
 #include "utils/threadQueue.hpp"
 #include "utils/command.hpp"
-#include "container/containerConfig.hpp"
-#include "config/globalConfig.hpp"
+#include "config/containerConfig.hpp"
 
 namespace shark {
 	class ContainerPool{
