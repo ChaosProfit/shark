@@ -123,8 +123,20 @@ int manageProcessFunc(void *args){
 	return ret;
 }
 
-shark::Container::Container(ContainerConfig &cCfg, SharkConfig &sCfg):cCfg(cCfg), sCfg(sCfg){
+int shark::Container::dftCfgInit(){
+
+	if(cCfg.net.addr.str.size() == 0){
+		cCfg.net.addr.str = "192.168.0.1/24";
+	}
+
+	sharkLog(SHARK_LOG_DEBUG, "dftCfgInit successfully, data:%s\n", cCfg.net.addr.str.data());
+	return 0;
+}
+
+shark::Container::Container(ContainerConfig &cCfgArg, SharkConfig &sCfgArg):cCfg(cCfgArg), sCfg(sCfgArg){
 	int ret = 0;
+
+	dftCfgInit();
 
 	ret = pipe(manageProcessPipe);
 	if(ret < 0){

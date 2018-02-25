@@ -118,6 +118,7 @@ int shark::CliServer::cliRecv(){
 		if(rcvLen < 0){
 			throw new SharkException("received failed");
 		}
+
 		retStr = cliProcess((char *)rcvBuf);
 
 		ret = send(recvFd, retStr.data(), retStr.size(), 0);

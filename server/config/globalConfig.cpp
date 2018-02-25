@@ -24,6 +24,7 @@ shark::GlobalConfig::GlobalConfig(){
 	gConfig = new SharkConfig();
 
 	configRead();
+	defaultCfgInit();
 
 	sharkLog(SHARK_LOG_DEBUG, "GlobalConfig construct successfully\n");
 }
@@ -34,8 +35,17 @@ shark::GlobalConfig::~GlobalConfig(){
 	sharkLog(SHARK_LOG_DEBUG, "GlobalConfig destruct successfully\n");
 }
 
-shark::SharkConfig* shark::GlobalConfig::getConfig(){
-	return gConfig;
+int shark::GlobalConfig::defaultCfgInit(){
+	if(gConfig->net.bridge.name.size() == 0){
+		gConfig->net.bridge.name = "shark0";
+	}
+
+	sharkLog(SHARK_LOG_DEBUG, "defaultCfgInit finished\n");
+	return 0;
+}
+
+shark::SharkConfig shark::GlobalConfig::getConfig(){
+	return *gConfig;
 }
 
 int shark::GlobalConfig::optionProcess(int argc, char *argv[]){

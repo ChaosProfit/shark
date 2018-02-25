@@ -14,15 +14,17 @@
 namespace shark{
 	class ContainerNetwork{
 	public:
-		ContainerNetwork(std::string &sId, NetworkConfig &gCfg, ContainerNetworkConfig &cCfg);
+		ContainerNetwork(std::string &sId, NetworkConfig &gnCfgArg, ContainerNetworkConfig &cnCfgArg);
 		~ContainerNetwork();
 	private:
 		int bridgeInit();
 		int bridgeExit();
 
 		std::string &shortId;
-		NetworkConfig &gnCfg;
-		ContainerNetworkConfig &cnCfg;
+		NetworkConfig gnCfg;
+		ContainerNetworkConfig cnCfg;
+
+		const char ETH0_INTERFACE[8] = "eth0";
 	};
 }
 

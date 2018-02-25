@@ -5,6 +5,7 @@
  *      Author: luguanglong
  */
 
+#include <memory>
 #include <string.h>
 
 #include "sharkd.hpp"
@@ -21,11 +22,13 @@ int shark::Sharkd::run(){
 	return 0;
 }
 
-shark::Sharkd::Sharkd(SharkConfig &cfg): sCfg(cfg){
+shark::Sharkd::Sharkd(){
+	std::shared_ptr<GlobalConfig> cfgReader = std::make_shared<GlobalConfig>();
 
+	sCfg = cfgReader->getConfig();
+	gNetwork = new GlobalNetwork(sCfg.net);
 	containerPool = new ContainerPool(sCfg);
 	cliServer = new CliServer(*containerPool);
-	gNetwork = new GlobalNetwork(sCfg.net);
 
 	sharkLog(SHARK_LOG_INFO, "Sharkd construct successfully\n");
 }
@@ -39,19 +42,14 @@ shark::Sharkd::~Sharkd(){
 }
 
 int main(int argc, char *argv[]){
+
 	dirInit();
 	sharkLogInit("/run/shark/sharkd.log");
-
-	shark::GlobalConfig *config = new shark::GlobalConfig();
-
 	daemonInit();
 
-	shark::Sharkd	*sharkd = new shark::Sharkd(*(config->getConfig()));
+	shark::Sharkd	*sharkd = new shark::Sharkd();
 	sharkdPtrStore(SHARKD_PTR_SAVE, sharkd);
 	sharkd->run();
-
-	delete sharkd;
-	delete config;
 
 	return 0;
 }

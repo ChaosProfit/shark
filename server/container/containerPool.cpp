@@ -70,7 +70,6 @@ std::string shark::ContainerPool::listCmdProcess(){
 
 	nlohmann::json retJson(slist);
 	sharkLog(SHARK_LOG_DEBUG, "json:%s\n", retJson.dump().data());
-
 	return retJson.dump();
 }
 
@@ -82,6 +81,7 @@ std::string shark::ContainerPool::cmdProcess(Command *cmd){
 	switch(cmd->type){
 	case COMMAND_CREATE:
 		ret = createContainer(*cmd);
+		sharkLog(SHARK_LOG_DEBUG, "create_ret:%d\n", ret);
 		retStr = retToJson(ret);
 
 		sharkLog(SHARK_LOG_DEBUG, "create_ret:%s\n", retStr.data());

@@ -12,7 +12,6 @@
 
 namespace shark{
 
-#define SHARK_BRIDGE "shark0"
 	class GlobalNetwork{
 	public:
 		GlobalNetwork(NetworkConfig &cfg);
@@ -26,7 +25,7 @@ namespace shark{
 		int bridgeInit();
 		int bridgeExit();
 
-		NetworkConfig &nCfg;
+		NetworkConfig nCfg;
 
 		const char sharkChain[32] = "SHARK";
 		int originalIpv4ForwardFlag = 0;

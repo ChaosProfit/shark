@@ -55,13 +55,15 @@ namespace shark{
 		~GlobalConfig();
 
 		int optionProcess(int argc, char *argv[]);
-		SharkConfig* getConfig();
+		SharkConfig getConfig();
 	private:
 		SharkConfig *gConfig;
 		std::string configFile = "/etc/shark/shark.conf";
 
 		int configRead();
 		int configLineProcess(char *line);
+
+		int defaultCfgInit();
 	};
 }
 

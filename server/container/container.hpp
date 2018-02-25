@@ -50,6 +50,7 @@ namespace shark {
 
 		int addProcess(Process *p);
 	private:
+		int dftCfgInit();
 		int initManageProcess();
 		Process *manageProcess = NULL;
 		int manageProcessPipe[2] = {0};
@@ -60,7 +61,7 @@ namespace shark {
 		SharkConfig &sCfg;
 		std::list<Process *> processList;
 
-		ContainerNetwork * cNetwork;
+		ContainerNetwork *cNetwork;
 
 		const static int SHORT_ID_LENGTH = 32;
 	};
