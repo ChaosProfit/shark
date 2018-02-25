@@ -8,6 +8,9 @@
 #ifndef CONFIG_GLOBALCONFIG_HPP_
 #define CONFIG_GLOBALCONFIG_HPP_
 
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include <memory>
 
 namespace shark{
@@ -17,17 +20,20 @@ namespace shark{
 		NETWORK_BRIDGE,
 	} NETWORK_TYPE;
 
-	typedef union{
-		unsigned int value;
+	union IntegerArrary{
+		unsigned int integer;
 		unsigned char array[4];
-	} Ipv4Addr;
+	};
+	typedef struct{
+		std::string str;
+		union IntegerArrary value;
+		union IntegerArrary bdValue;
+		unsigned int mask;
+	}Ipv4Addr;
 
 	typedef struct{
 		std::string name;
-		std::string addrStr;
 		Ipv4Addr addr;
-		Ipv4Addr bdAddr;
-		unsigned char addrMask;
 	} Bridge;
 
 	typedef struct{
@@ -41,12 +47,13 @@ namespace shark{
 		NetworkConfig net;
 	} SharkConfig;
 
+	int ipv4AddrPreprocess(Ipv4Addr &addr);
+
 	class GlobalConfig{
 	public:
 		GlobalConfig();
 		~GlobalConfig();
 
-		int brIpv4Process(Bridge &ip);
 		int optionProcess(int argc, char *argv[]);
 		SharkConfig* getConfig();
 	private:

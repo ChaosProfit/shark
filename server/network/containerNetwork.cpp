@@ -36,32 +36,49 @@ int shark::ContainerNetwork::bridgeExit(){
 	return ret;
 }
 
-shark::ContainerNetwork::ContainerNetwork(std::string &sId, NetworkConfig &cfg):
-shortId(sId), nCfg(cfg){
+shark::ContainerNetwork::ContainerNetwork(std::string &sId, NetworkConfig &gCfg, ContainerNetworkConfig &cCfg):
+shortId(sId), gnCfg(gCfg), cnCfg(cCfg){
+	int ret = 0;
 
-	switch(nCfg.type){
+	if(gnCfg.enable == false){
+		sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d construct finished, Network disabled\n", shortId.data(), gnCfg.type);
+		return;
+	}
+
+	ret = ipv4AddrPreprocess(cnCfg.addr);
+	if(ret < 0){
+		sharkLog(SHARK_LOG_DEBUG, "%s preprocess failed\n", cnCfg.addr.str.data());
+		return;
+	}
+
+	switch(gnCfg.type){
 	case NETWORK_BRIDGE:
 		bridgeInit();
 		break;
 	default:
-		sharkLog(SHARK_LOG_ERR, "container:%s, Unknown network type:%d\n", shortId.data(), nCfg.type);
+		sharkLog(SHARK_LOG_ERR, "container:%s, Unknown network type:%d\n", shortId.data(), gnCfg.type);
 		break;
 	}
 
-	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d construct successfully\n", shortId.data(), nCfg.type);
+	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d construct successfully\n", shortId.data(), gnCfg.type);
 	return;
 }
 
 shark::ContainerNetwork::~ContainerNetwork(){
-	switch(nCfg.type){
+	if(gnCfg.enable == false){
+		sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d destruct finished, Network disabled\n", shortId.data(), gnCfg.type);
+		return;
+	}
+
+	switch(gnCfg.type){
 	case NETWORK_BRIDGE:
 		bridgeExit();
 		break;
 	default:
-		sharkLog(SHARK_LOG_ERR, "container:%s, Unknown network type:%d\n", shortId.data(), nCfg.type);
+		sharkLog(SHARK_LOG_ERR, "container:%s, Unknown network type:%d\n", shortId.data(), gnCfg.type);
 		break;
 	}
 
-	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d, destruct successfully\n", shortId.data(), nCfg.type);
+	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d, destruct successfully\n", shortId.data(), gnCfg.type);
 	return;
 }

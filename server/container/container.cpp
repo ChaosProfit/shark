@@ -123,7 +123,7 @@ int manageProcessFunc(void *args){
 	return ret;
 }
 
-shark::Container::Container(struct ContainerConfig &cCfg, SharkConfig &sCfg):cCfg(cCfg), sCfg(sCfg){
+shark::Container::Container(ContainerConfig &cCfg, SharkConfig &sCfg):cCfg(cCfg), sCfg(sCfg){
 	int ret = 0;
 
 	ret = pipe(manageProcessPipe);
@@ -131,7 +131,7 @@ shark::Container::Container(struct ContainerConfig &cCfg, SharkConfig &sCfg):cCf
 		sharkLog(SHARK_LOG_DEBUG, "Container construct failed\n");
 	}
 
-	cNetwork = new ContainerNetwork(cCfg.id, sCfg.net);
+	cNetwork = new ContainerNetwork(cCfg.id, sCfg.net, cCfg.net);
 	sharkLog(SHARK_LOG_DEBUG, "Container construct successfully, readPipe:%d, writePipe:%d\n", manageProcessPipe[0], manageProcessPipe[1]);
 	return;
 }

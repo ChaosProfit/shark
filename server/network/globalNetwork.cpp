@@ -71,8 +71,8 @@ int shark::GlobalNetwork::bridgeIptablesInit(){
 	ret = cmdExecSync("iptables -t nat -A PREROUTING -m addrtype --dst-type LOCAL -j %s", sharkChain);
 	ret = cmdExecSync("iptables -t nat -A OUTPUT -m addrtype --dst-type LOCAL -j %s", sharkChain);
 	ret =cmdExecSync("iptables -t nat -A POSTROUTING -s %u.%u.%u.%u/%u ! -o %s -j MASQUERADE",
-						nCfg.bridge.addr.array[0], nCfg.bridge.addr.array[1], nCfg.bridge.addr.array[2],
-						nCfg.bridge.addr.array[3], nCfg.bridge.addrMask, nCfg.bridge);
+						nCfg.bridge.addr.value.array[0], nCfg.bridge.addr.value.array[1], nCfg.bridge.addr.value.array[2],
+						nCfg.bridge.addr.value.array[3], nCfg.bridge.addr.mask, nCfg.bridge.name);
 
 	if(nCfg.ccFlag == true){
 		ret = cmdExecSync("iptalbes -t filter -A FORWARD -i %s -o %s -j ACCEPT", nCfg.bridge.name, nCfg.bridge.name);
@@ -97,8 +97,8 @@ int shark::GlobalNetwork::bridgeIptablesExit(){
 
 
 	ret =cmdExecSync("iptables -t nat -D POSTROUTING -s %u.%u.%u.%u/%u ! -o %s -j MASQUERADE",
-						nCfg.bridge.addr.array[0], nCfg.bridge.addr.array[1], nCfg.bridge.addr.array[2],
-						nCfg.bridge.addr.array[3], nCfg.bridge.addrMask, nCfg.bridge);
+						nCfg.bridge.addr.value.array[0], nCfg.bridge.addr.value.array[1], nCfg.bridge.addr.value.array[2],
+						nCfg.bridge.addr.value.array[3], nCfg.bridge.addr.mask, nCfg.bridge.name);
 
 	ret = cmdExecSync("iptables -t nat -D PREROUTING -m addrtype --dst-type LOCAL -j %s", sharkChain);
 	ret = cmdExecSync("iptables -t nat -D OUTPUT -m addrtype --dst-type LOCAL -j %s", sharkChain);
@@ -118,10 +118,10 @@ int shark::GlobalNetwork::bridgeInit(){
 	ret = cmdExecSync("ip link add name %s type bridge", nCfg.bridge.name);
 	ret = cmdExecSync("ip link set %s up", nCfg.bridge.name);
 	ret = cmdExecSync("ip addr add %d.%d.%d.%d/%d broadcast %d.%d.%d.%d dev %s",
-			nCfg.bridge.addr.array[0], nCfg.bridge.addr.array[1], nCfg.bridge.addr.array[2],
-			nCfg.bridge.addr.array[3], nCfg.bridge.addrMask,
-			nCfg.bridge.bdAddr.array[0], nCfg.bridge.bdAddr.array[1], nCfg.bridge.bdAddr.array[2],
-			nCfg.bridge.bdAddr.array[3],
+			nCfg.bridge.addr.value.array[0], nCfg.bridge.addr.value.array[1], nCfg.bridge.addr.value.array[2],
+			nCfg.bridge.addr.value.array[3], nCfg.bridge.addr.mask,
+			nCfg.bridge.addr.bdValue.array[0], nCfg.bridge.addr.bdValue.array[1], nCfg.bridge.addr.bdValue.array[2],
+			nCfg.bridge.addr.bdValue.array[3],
 			nCfg.bridge.name);
 
 	ret = bridgeIptablesInit();

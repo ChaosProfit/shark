@@ -4,6 +4,8 @@
  *  Created on: 2018年2月20日
  *      Author: luguanglong
  */
+#include <sys/socket.h>
+
 #include <unistd.h>
 #include <string.h>
 #include <getopt.h>
@@ -94,8 +96,8 @@ int shark::GlobalConfig::configLineProcess(char *line){
 		}
 	}
 	else if(key.compare("bridge-ip") == 0){
-		gConfig->net.bridge.addrStr = value;
-		brIpv4Process(gConfig->net.bridge);
+		gConfig->net.bridge.addr.str = value;
+		ipv4AddrPreprocess(gConfig->net.bridge.addr);
 	}
 
 	return 0;
@@ -126,44 +128,43 @@ int shark::GlobalConfig::configRead(){
 	return 0;
 }
 
-int shark::GlobalConfig::brIpv4Process(Bridge &bridge){
-
-	int ret = sscanf(bridge.addrStr.data(), "%u.%u.%u.%u/%u",
-										(unsigned int*)&bridge.addr.array[0], (unsigned int*)&bridge.addr.array[1],
-										(unsigned int*)&bridge.addr.array[2], (unsigned int*)&bridge.addr.array[3],
-										(unsigned int*)&bridge.addrMask);
+int shark::ipv4AddrPreprocess(Ipv4Addr &addr){
+	int ret = sscanf(addr.str.data(), "%u.%u.%u.%u/%u",
+										(unsigned int*)&addr.value.array[0], (unsigned int*)&addr.value.array[1],
+										(unsigned int*)&addr.value.array[2], (unsigned int*)&addr.value.array[3],
+										&addr.mask);
 
 	if(ret == EOF){
-		sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, ipStr:%s\n", bridge.addrStr.data());
+		sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, ipStr:%s\n", addr.str.data());
 		return -1;
 	}
 
-	if(bridge.addrMask > 32){
-		sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, mask:%d\n", bridge.addrMask);
+	if(addr.mask > 32){
+		sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, mask:%d\n", addr.mask);
 		return -1;
 	}
 
 	for(int index = 0; index < 4; index++){
-		if(bridge.addr.array[index] > 255){
-			sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, ipStr:%s\n", bridge.addrStr.data());
+		if(addr.value.array[index] > 255){
+			sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, ipStr:%s\n", addr.str.data());
 			return -1;
 		}
 	}
 
-	bridge.bdAddr.value = bridge.addr.value;
+	addr.bdValue = addr.value;
 
-	for(int index = bridge.addrMask; index >= 0; index--){
-		bridge.bdAddr.value |= (0x1 << (32 - index));
+	for(int index = addr.mask; index >= 0; index--){
+		addr.bdValue.integer |= (0x1 << (32 - index));
 	}
 
 	sharkLog(SHARK_LOG_DEBUG, "mask:%d\n",
-			bridge.addrMask);
+			addr.mask);
 
 	sharkLog(SHARK_LOG_DEBUG, "addr0:%d, addr1:%d, addr2:%d, addr3:%d\n",
-			bridge.addr.array[0], bridge.addr.array[1], bridge.addr.array[2], bridge.addr.array[3]);
+			addr.value.array[0], addr.value.array[1], addr.value.array[2], addr.value.array[3]);
 
 	sharkLog(SHARK_LOG_DEBUG, "br0:%d, br1:%d, br2:%d, br3:%d\n",
-			bridge.bdAddr.array[0], bridge.bdAddr.array[1], bridge.bdAddr.array[2], bridge.bdAddr.array[3]);
+			addr.bdValue.array[0], addr.bdValue.array[1], addr.bdValue.array[2], addr.bdValue.array[3]);
 
 	sharkLog(SHARK_LOG_DEBUG, "brIpv4Process successfully\n");
 	return 0;

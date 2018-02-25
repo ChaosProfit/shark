@@ -14,16 +14,18 @@
 #include "globalConfig.hpp"
 
 namespace shark{
-	struct ContainerConfig{
+
+	typedef struct{
+		Ipv4Addr addr;
+	} ContainerNetworkConfig;
+
+	typedef struct{
 		std::string id;
 		std::string execCmd;
 		std::string nameSpace;
 		std::string rootfsPath;
-		std::string addrStr;
-		Ipv4Addr addr;
-	};
+		ContainerNetworkConfig net;
+	} ContainerConfig;
 }
-
-
 
 #endif /* CONTAINER_CONTAINERCONFIG_HPP_ */

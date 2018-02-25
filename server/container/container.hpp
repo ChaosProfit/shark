@@ -27,7 +27,7 @@
 namespace shark {
 	class Container{
 	public:
-		Container(struct ContainerConfig &cCfg, SharkConfig &sCfg);
+		Container(ContainerConfig &cCfg, SharkConfig &sCfg);
 		~Container();
 
 		int checkPoint();
@@ -56,7 +56,7 @@ namespace shark {
 
 		std::string id;
 		std::string nameSpace;
-		struct ContainerConfig cCfg;
+		ContainerConfig cCfg;
 		SharkConfig &sCfg;
 		std::list<Process *> processList;
 

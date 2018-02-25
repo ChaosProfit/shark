@@ -8,20 +8,21 @@
 #ifndef NETWORK_CONTAINERNETWORK_HPP_
 #define NETWORK_CONTAINERNETWORK_HPP_
 
-#include "config/globalConfig.hpp"
+#include "config/containerConfig.hpp"
 #include <string>
 
 namespace shark{
 	class ContainerNetwork{
 	public:
-		ContainerNetwork(std::string &shortId, NetworkConfig &nCfg);
+		ContainerNetwork(std::string &sId, NetworkConfig &gCfg, ContainerNetworkConfig &cCfg);
 		~ContainerNetwork();
 	private:
 		int bridgeInit();
 		int bridgeExit();
 
 		std::string &shortId;
-		NetworkConfig &nCfg;
+		NetworkConfig &gnCfg;
+		ContainerNetworkConfig &cnCfg;
 	};
 }
 

@@ -28,7 +28,7 @@ namespace shark{
 
 	struct Command{
 		COMMAND_TYPE type;
-		struct ContainerConfig cfg;
+		ContainerConfig cfg;
 	};
 
 }
