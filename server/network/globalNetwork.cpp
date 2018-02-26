@@ -74,11 +74,14 @@ int shark::GlobalNetwork::bridgeIptablesInit(){
 						nCfg.bridge.addr.value.array[0], nCfg.bridge.addr.value.array[1], nCfg.bridge.addr.value.array[2],
 						nCfg.bridge.addr.value.array[3], nCfg.bridge.addr.mask, nCfg.bridge.name.data());
 
+	ret = cmdExecSync("iptables -t filter -A FORWARD -i %s ! -o %s -j ACCEPT", nCfg.bridge.name.data(), nCfg.bridge.name.data());
+	ret = cmdExecSync("iptables -t filter -A FORWARD ! -i %s -o %s -j ACCEPT", nCfg.bridge.name.data(), nCfg.bridge.name.data());
+
 	if(nCfg.ccFlag == true){
-		ret = cmdExecSync("iptalbes -t filter -A FORWARD -i %s -o %s -j ACCEPT", nCfg.bridge.name.data(), nCfg.bridge.name.data());
+		ret = cmdExecSync("iptables -t filter -A FORWARD -i %s -o %s -j ACCEPT", nCfg.bridge.name.data(), nCfg.bridge.name.data());
 	}
 	else{
-		ret = cmdExecSync("iptalbes -t filter -A FORWARD -i %s -o %s -j DROP", nCfg.bridge.name.data(), nCfg.bridge.name.data());
+		ret = cmdExecSync("iptables -t filter -A FORWARD -i %s -o %s -j DROP", nCfg.bridge.name.data(), nCfg.bridge.name.data());
 	}
 
 	sharkLog(SHARK_LOG_DEBUG, "bridgeIptablesInit successfully\n");
@@ -99,12 +102,12 @@ int shark::GlobalNetwork::bridgeIptablesExit(){
 	ret =cmdExecSync("iptables -t nat -D POSTROUTING -s %u.%u.%u.%u/%u ! -o %s -j MASQUERADE",
 						nCfg.bridge.addr.value.array[0], nCfg.bridge.addr.value.array[1], nCfg.bridge.addr.value.array[2],
 						nCfg.bridge.addr.value.array[3], nCfg.bridge.addr.mask, nCfg.bridge.name.data());
-
 	ret = cmdExecSync("iptables -t nat -D PREROUTING -m addrtype --dst-type LOCAL -j %s", sharkChain);
 	ret = cmdExecSync("iptables -t nat -D OUTPUT -m addrtype --dst-type LOCAL -j %s", sharkChain);
-
-
 	ret = cmdExecSync("iptables -t nat -D %s", sharkChain);
+
+	ret = cmdExecSync("iptables -t filter -D FORWARD -i %s ! -o %s -j ACCEPT", nCfg.bridge.name.data(), nCfg.bridge.name.data());
+	ret = cmdExecSync("iptables -t filter -D FORWARD ! -i %s -o %s -j ACCEPT", nCfg.bridge.name.data(), nCfg.bridge.name.data());
 
 	flagSet("/proc/sys/net/ipv4/ip_forward", originalIpv4ForwardFlag);
 

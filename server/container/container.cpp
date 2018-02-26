@@ -126,7 +126,13 @@ int manageProcessFunc(void *args){
 int shark::Container::dftCfgInit(){
 
 	if(cCfg.net.addr.str.size() == 0){
-		cCfg.net.addr.str = "192.168.0.1/24";
+		char tmp[32] = {0};
+		snprintf(tmp, 32, "%u.%u.%u.%u/%u", sCfg.net.bridge.addr.value.array[0],
+												 sCfg.net.bridge.addr.value.array[1],
+												 sCfg.net.bridge.addr.value.array[2],
+												 sCfg.net.bridge.addr.value.array[3] + 1,
+												 sCfg.net.bridge.addr.mask);
+		cCfg.net.addr.str = tmp;
 	}
 
 	sharkLog(SHARK_LOG_DEBUG, "dftCfgInit successfully, data:%s\n", cCfg.net.addr.str.data());

@@ -20,7 +20,12 @@ int shark::ContainerNetwork::bridgeInit(){
 	ret = cmdExecSync("ip netns exec %s ip addr add %s dev %s", netNs.data(), this->cnCfg.addr.str.data(), ETH0_INTERFACE);
 	ret = cmdExecSync("ip netns exec %s ip link set up dev %s", netNs.data(), ETH0_INTERFACE);
 	ret = cmdExecSync("ip netns exec %s ip link set up dev lo", netNs.data());
+	ret = cmdExecSync("ip netns exec %s ip route add default via %u.%u.%u.%u dev %s", netNs.data(),
+						gnCfg.bridge.addr.value.array[0], gnCfg.bridge.addr.value.array[1],
+						gnCfg.bridge.addr.value.array[2],gnCfg.bridge.addr.value.array[3],
+						ETH0_INTERFACE);
 	ret = cmdExecSync("ip link set veth%s master %s", netNs.data(), gnCfg.bridge.name.data());
+	ret = cmdExecSync("ip link set up dev veth%s", netNs.data());
 
 	sharkLog(SHARK_LOG_DEBUG, "Container %s bridge init\n", shortId.data());
 	return ret;
@@ -30,8 +35,8 @@ int shark::ContainerNetwork::bridgeExit(){
 	int ret = 0;
 	std::string netNs = "shark" + shortId;
 
-	ret = cmdExecSync("ip link set veth%s nomaster", netNs.data());
-	ret = cmdExecSync("ip netns exec %s ip link set %s down", netNs.data(), ETH0_INTERFACE);
+//	ret = cmdExecSync("ip link set veth%s nomaster", netNs.data());
+//	ret = cmdExecSync("ip netns exec %s ip link set %s down", netNs.data(), ETH0_INTERFACE);
 	ret = cmdExecSync("ip netns del %s", netNs.data());
 
 	sharkLog(SHARK_LOG_DEBUG, "Container %s bridge exit\n", shortId.data());
