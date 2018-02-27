@@ -46,8 +46,8 @@ const char *shark::Option::process(int argc, char *argv[]){
 			else if(strcmp(sharkOptions[optionIndex].name, "addr") == 0){
 				cmd.cfg.ipAddr = optarg;
 			}
-			else if(strcmp(sharkOptions[optionIndex].name, "net-rate") == 0){
-				cmd.cfg.netRate = optarg;
+			else if(strcmp(sharkOptions[optionIndex].name, "net-bandwidth") == 0){
+				cmd.cfg.netBandwidth = optarg;
 			}
  			else{
  				sharkLog(SHARK_LOG_ERR, "unknown Options\n");

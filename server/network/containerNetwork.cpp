@@ -26,7 +26,9 @@ int shark::ContainerNetwork::commonInit(){
 						ETH0_INTERFACE);
 	ret = cmdExecSync("ip link set up dev veth%s", netNs.data());
 
-	sharkLog(SHARK_LOG_DEBUG, "Container %s bridge init\n", shortId.data());
+	ret = bandwidthSet();
+
+	sharkLog(SHARK_LOG_DEBUG, "Container %s common init\n", shortId.data());
 	return ret;
 }
 
@@ -36,17 +38,44 @@ int shark::ContainerNetwork::commonExit(){
 
 	ret = cmdExecSync("ip netns del %s", netNs.data());
 
-	sharkLog(SHARK_LOG_DEBUG, "Container %s bridge exit\n", shortId.data());
+	ret = bandwidthClear();
+
+	sharkLog(SHARK_LOG_DEBUG, "Container %s common exit\n", shortId.data());
 	return ret;
 }
 
 int shark::ContainerNetwork::bandwidthSet(){
-	return 0;
+	int ret = 0;
+	std::string netNs = "shark" + shortId;
+
+	if(netNs.size() == 0){
+		sharkLog(SHARK_LOG_DEBUG, "Container %s bandwidth not enabled\n", shortId.data());
+		return 0;
+	}
+
+	ret = cmdExecSync("tc qdisc add dev veth%s root handle 1: htb default 17", netNs.data());
+	ret = cmdExecSync("tc class add dev veth%s parent 1: classid 1:17 htb rate %s ceil %s",\
+					  netNs.data(), cnCfg.bandwidth.data(), cnCfg.bandwidth.data());
+
+	sharkLog(SHARK_LOG_DEBUG, "Container %s bandwidthSet:%s finished\n", shortId.data(), cnCfg.bandwidth.data());
+	return ret;
 }
 
-int shark::ContainerNetwork::bandwidthSet(){
+int shark::ContainerNetwork::bandwidthClear(){
+	int ret = 0;
+	std::string netNs = "shark" + shortId;
 
-	return 0;
+	if(netNs.size() == 0){
+		sharkLog(SHARK_LOG_DEBUG, "Container %s bandwidth not enabled\n", shortId.data());
+		return 0;
+	}
+
+	ret = cmdExecSync("tc class del dev veth%s parent 1: classid 1:17 htb rate %s ceil %s",\
+					  netNs.data(), cnCfg.bandwidth.data(), cnCfg.bandwidth.data());
+	ret = cmdExecSync("tc qdisc del dev veth%s root handle 1: htb default 17", netNs.data());
+
+	sharkLog(SHARK_LOG_DEBUG, "Container %s bandwidthClear finished\n", shortId.data());
+	return ret;
 }
 
 int shark::ContainerNetwork::bridgeInit(){
@@ -112,6 +141,6 @@ shark::ContainerNetwork::~ContainerNetwork(){
 	}
 
 	ret = commonExit();
-	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d, destruct successfully\n", shortId.data(), gnCfg.type);
+	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d, destruct successfully, ret:%d\n", shortId.data(), gnCfg.type, ret);
 	return;
 }

@@ -14,6 +14,7 @@
 #include <stdarg.h>
 #include <sys/wait.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <string>
 #include <regex>
@@ -91,11 +92,12 @@ int rmDir(const char *dirPath)
 	}
 
 	closedir(dirp);
-	return 0;
+	return ret;
 }
 
 int cmdExecSync(const char *format ,...)
 {
+	pid_t childPid = 0;
 	char argBuf[1024] = {0};
 	char retBuf[256] = {0};
 
@@ -104,14 +106,37 @@ int cmdExecSync(const char *format ,...)
 	vsnprintf(argBuf, 1024, format, argLst);
 	va_end(argLst);
 
+	childPid = fork();
+	if(childPid == 0){
+
+	}
+	else if(childPid > 0){
+		int retStatus = 0;
+		int ret = waitpid(childPid, &retStatus, WUNTRACED);
+		if(ret != childPid){
+			sharkLog(SHARK_LOG_ERR, "pid:%d wait failed\n", childPid);
+			sharkLog(SHARK_LOG_ERR, "%s exec failed\n", argBuf);
+			return -1;
+		}
+
+		if(!WIFEXITED(retStatus)){
+			sharkLog(SHARK_LOG_ERR, "pid:%d failed\n", childPid);
+			sharkLog(SHARK_LOG_ERR, "%s exec failed\n", argBuf);
+			return -1;
+		}
+	}
+	else{
+		sharkLog(SHARK_LOG_ERR, "Child process fork failed, %s exec failed\n", argBuf);
+	}
 	FILE *p_file = popen(argBuf, "r");
 	while(fgets(retBuf, 256, p_file) != NULL) {
-		sharkLog(SHARK_LOG_ERR, "popen_ret:%s\n", retBuf);
+		sharkLog(SHARK_LOG_DEBUG, "popen_ret:%s\n", retBuf);
 	}
 	pclose(p_file);
 
-	sharkLog(SHARK_LOG_DEBUG, "cmdExecSync finished\n");
-	return 0;
+	sharkLog(SHARK_LOG_DEBUG, "cm"
+			"dExecSync finished, ret:%d\n", ret);
+	return ret;
 }
 
 
