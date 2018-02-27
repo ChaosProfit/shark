@@ -17,6 +17,7 @@ namespace shark{
 
 	typedef struct{
 		Ipv4Addr addr;
+		std::string bandwidth;
 	} ContainerNetworkConfig;
 
 	typedef struct{

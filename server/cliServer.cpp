@@ -84,6 +84,7 @@ std::string shark::CliServer::cliProcess(char *buf){
 	cmd.cfg.id = cliJson["id"].get<std::string>();
 	cmd.cfg.execCmd = cliJson["execCmd"].get<std::string>();
 	cmd.cfg.net.addr.str = cliJson["ipAddr"].get<std::string>();
+	cmd.cfg.net.bandwidth = cliJson["netBandwidth"].get<std::string>();
 
 	retStr = cPool.cmdProcess(&cmd);
 

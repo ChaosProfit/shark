@@ -17,8 +17,12 @@ namespace shark{
 		ContainerNetwork(std::string &sId, NetworkConfig &gnCfgArg, ContainerNetworkConfig &cnCfgArg);
 		~ContainerNetwork();
 	private:
+		int commonInit();
+		int commonExit();
 		int bridgeInit();
 		int bridgeExit();
+		int bandwidthSet();
+		int bandwidthClear();
 
 		std::string &shortId;
 		NetworkConfig gnCfg;

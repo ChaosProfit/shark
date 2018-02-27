@@ -10,7 +10,7 @@
 #include "utils/misc.hpp"
 #include "utils/log.hpp"
 
-int shark::ContainerNetwork::bridgeInit(){
+int shark::ContainerNetwork::commonInit(){
 	int ret = 0;
 	std::string netNs = "shark" + shortId;
 
@@ -24,23 +24,44 @@ int shark::ContainerNetwork::bridgeInit(){
 						gnCfg.bridge.addr.value.array[0], gnCfg.bridge.addr.value.array[1],
 						gnCfg.bridge.addr.value.array[2],gnCfg.bridge.addr.value.array[3],
 						ETH0_INTERFACE);
-	ret = cmdExecSync("ip link set veth%s master %s", netNs.data(), gnCfg.bridge.name.data());
 	ret = cmdExecSync("ip link set up dev veth%s", netNs.data());
 
 	sharkLog(SHARK_LOG_DEBUG, "Container %s bridge init\n", shortId.data());
 	return ret;
 }
 
-int shark::ContainerNetwork::bridgeExit(){
+int shark::ContainerNetwork::commonExit(){
 	int ret = 0;
 	std::string netNs = "shark" + shortId;
 
-//	ret = cmdExecSync("ip link set veth%s nomaster", netNs.data());
-//	ret = cmdExecSync("ip netns exec %s ip link set %s down", netNs.data(), ETH0_INTERFACE);
 	ret = cmdExecSync("ip netns del %s", netNs.data());
 
 	sharkLog(SHARK_LOG_DEBUG, "Container %s bridge exit\n", shortId.data());
 	return ret;
+}
+
+int shark::ContainerNetwork::bandwidthSet(){
+	return 0;
+}
+
+int shark::ContainerNetwork::bandwidthSet(){
+
+	return 0;
+}
+
+int shark::ContainerNetwork::bridgeInit(){
+	int ret = 0;
+	std::string netNs = "shark" + shortId;
+
+	ret = cmdExecSync("ip link set veth%s master %s", netNs.data(), gnCfg.bridge.name.data());
+
+	sharkLog(SHARK_LOG_DEBUG, "Container %s bridge init\n", shortId.data());
+	return ret;
+}
+
+int shark::ContainerNetwork::bridgeExit(){
+	sharkLog(SHARK_LOG_DEBUG, "Container %s bridge exit\n", shortId.data());
+	return 0;
 }
 
 shark::ContainerNetwork::ContainerNetwork(std::string &sId, NetworkConfig &gnCfgArg, ContainerNetworkConfig &cnCfgArg):
@@ -58,9 +79,11 @@ shortId(sId), gnCfg(gnCfgArg), cnCfg(cnCfgArg){
 		return;
 	}
 
+	ret = commonInit();
+
 	switch(gnCfg.type){
 	case NETWORK_BRIDGE:
-		bridgeInit();
+		ret = bridgeInit();
 		break;
 	default:
 		sharkLog(SHARK_LOG_ERR, "container:%s, Unknown network type:%d\n", shortId.data(), gnCfg.type);
@@ -72,6 +95,8 @@ shortId(sId), gnCfg(gnCfgArg), cnCfg(cnCfgArg){
 }
 
 shark::ContainerNetwork::~ContainerNetwork(){
+	int ret = 0;
+
 	if(gnCfg.enable == false){
 		sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d destruct finished, Network disabled\n", shortId.data(), gnCfg.type);
 		return;
@@ -86,6 +111,7 @@ shark::ContainerNetwork::~ContainerNetwork(){
 		break;
 	}
 
+	ret = commonExit();
 	sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d, destruct successfully\n", shortId.data(), gnCfg.type);
 	return;
 }
