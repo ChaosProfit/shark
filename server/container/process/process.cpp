@@ -22,7 +22,7 @@ int binExecCallback(void *args){
 	shark::Process *process = (shark::Process *)args;
 	sharkLog(SHARK_LOG_DEBUG, "arg1:%s,arg2:%s\n", process->getExecBin(), process->getArgv()[0]);
 
-	ret = execv(process->getExecBin(), process->getArgv());
+	ret = execvp(process->getExecBin(), process->getArgv());
 
 	sharkLog(SHARK_LOG_DEBUG, "ret:%d, err:%d\n", ret, errno);
 	return ret;
