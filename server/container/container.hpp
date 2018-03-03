@@ -49,7 +49,9 @@ namespace shark {
 		}
 
 		int addProcess(Process *p);
+
 	private:
+		int idInit();
 		int dftCfgInit();
 		int initManageProcess();
 		Process *manageProcess = NULL;

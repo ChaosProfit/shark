@@ -26,7 +26,6 @@ namespace shark {
 	class Process{
 	public:
 		Process(int stackSize, const char *execCmd);
-		Process(int stackSize, int (*execFunc)(void *args));
 		Process(int stackSize, int (*execFunc)(void *args), void *argv, int cloneFlags);
 		~Process();
 
@@ -40,27 +39,21 @@ namespace shark {
 			return this->pid;
 		};
 
-		char **getArgv(){
-			return argv;
-		};
+		std::string &getExecCmd(){
+			return execCmd;
+		}
 
-		char *getExecBin(){
-			return argv[0];
-		};
 	private:
-		int cmdCheck();
+		std::string execCmd;
+
 		int execFunction();
 		int (*funcExecCallback)(void *args) = NULL;
 
 		int stackSize;
 		int cloneFlags;
-		int argvGenerate(std::string &execCmd);
 		void *stackPtr;
 		int pid = 0;
-		char **argv = NULL;
 		void *execFuncArg = NULL;
-		unsigned int argNum = 0;
-		EXEC_TYPE type = EXEC_BIN;
 		std::list<Process *> childProcessList;
 	};
 }

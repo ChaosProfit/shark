@@ -16,6 +16,7 @@
 #include <list>
 
 #include "container.hpp"
+#include "namespaces.hpp"
 #include "utils/exceptions.hpp"
 #include "utils/log.hpp"
 #include "process/process.hpp"
@@ -100,9 +101,17 @@ int manageProcessFunc(void *args){
 	int readPipe = container->getReadPipe();
 	char buf[PIPE_BUF] = {0};
 
+	ret = read(readPipe, buf, PIPE_BUF);
+	if((unsigned int)ret != container->getId().size()){
+		sharkLog(SHARK_LOG_DEBUG, "managerProcessFunc create failed, ret:%d, rcv:%s\n", ret , buf);
+		return -1;
+	}
+
+	utsNsInit(container->getId().data());
+
 	ret = initSignalProcess();
 
-	sharkLog(SHARK_LOG_DEBUG, "manage process pid:%d\n", getpid());
+	sharkLog(SHARK_LOG_DEBUG, "manage process,uid:%d,gid:%d, pid:%d\n", getuid(), getgid(), getpid());
 
 	while(1){
 
@@ -121,6 +130,14 @@ int manageProcessFunc(void *args){
 	}
 
 	return ret;
+}
+
+int shark::Container::idInit(){
+
+	id = cCfg.id;
+
+	sharkLog(SHARK_LOG_DEBUG, "Id init finished, ID:%s\n", id.data());
+	return 0;
 }
 
 int shark::Container::dftCfgInit(){
@@ -142,7 +159,9 @@ int shark::Container::dftCfgInit(){
 shark::Container::Container(ContainerConfig &cCfgArg, SharkConfig &sCfgArg):cCfg(cCfgArg), sCfg(sCfgArg){
 	int ret = 0;
 
-	dftCfgInit();
+	ret = dftCfgInit();
+
+	ret = idInit();
 
 	ret = pipe(manageProcessPipe);
 	if(ret < 0){
@@ -165,14 +184,16 @@ shark::Container::~Container(){
 
 int shark::Container::start(){
 	int ret = 0;
-//	int cloneFlag = CLONE_FS | CLONE_NEWPID | CLONE_NEWNET;
-
-	int cloneFlag = CLONE_FS | CLONE_NEWPID | CLONE_NEWUTS;
+	int cloneFlag = CLONE_NEWPID | CLONE_NEWUSER | CLONE_NEWUTS;
 
 	manageProcess = new Process(DEFAULT_STACK_SIZE, manageProcessFunc, (void *)this, cloneFlag);
 	manageProcess->exec();
 
-	sharkLog(SHARK_LOG_DEBUG, "Container start successfully, ret:%d\n", ret);
+	userNsInit(manageProcess->getPid());
+	ret = write(manageProcessPipe[1], id.data(), id.size());
+
+	sharkLog(SHARK_LOG_DEBUG, "Container %s start successfully, ret:%d\n",\
+			 id.data() ,ret);
 	return ret;
 }
 
@@ -194,3 +215,4 @@ int shark::Container::addProcess(Process *p){
 	sharkLog(SHARK_LOG_DEBUG, "addProcess successfully\n");
 	return 0;
 }
+

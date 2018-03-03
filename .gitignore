@@ -1,6 +1,7 @@
 .cproject
 .project
 .settings
+.o
 server/Debug
 server/Release
 client/Debug
