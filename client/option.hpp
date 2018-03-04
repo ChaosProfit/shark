@@ -22,6 +22,8 @@ namespace shark{
 	typedef struct{
 		std::string ipAddr;
 		std::string netBandwidth;
+		std::string mountPath;
+		std::string mountType;
 	}Config;
 
 	typedef struct{

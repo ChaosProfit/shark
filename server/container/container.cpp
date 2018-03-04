@@ -184,7 +184,7 @@ shark::Container::~Container(){
 
 int shark::Container::start(){
 	int ret = 0;
-	int cloneFlag = CLONE_NEWPID | CLONE_NEWUSER | CLONE_NEWUTS;
+	int cloneFlag = CLONE_NEWPID | CLONE_NEWUSER | CLONE_NEWUTS | CLONE_NEWNS | CLONE_NEWIPC;
 
 	manageProcess = new Process(DEFAULT_STACK_SIZE, manageProcessFunc, (void *)this, cloneFlag);
 	manageProcess->exec();

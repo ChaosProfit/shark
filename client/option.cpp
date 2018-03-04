@@ -19,10 +19,11 @@
 
 static struct option sharkOptions[] = {
 												{"command",  required_argument, 0, 'c'},
-												{"exec",  required_argument, 0, 'e'},
+												{"exec-cmd",  required_argument, 0, 'e'},
 												{"id",  required_argument, 0, 0},
 												{"addr",  required_argument, 0, 0},
 												{"net-bandwidth",  required_argument, 0, 0},
+												{"mount-type",  required_argument, 0, 0},
 												{0,	0,	0,	0}
 											};
 
@@ -49,7 +50,10 @@ const char *shark::Option::process(int argc, char *argv[]){
 			else if(strcmp(sharkOptions[optionIndex].name, "net-bandwidth") == 0){
 				cmd.cfg.netBandwidth = optarg;
 			}
- 			else{
+			else if(strcmp(sharkOptions[optionIndex].name, "mount-type") == 0){
+				cmd.cfg.mountType = optarg;
+			}
+			else{
  				sharkLog(SHARK_LOG_ERR, "unknown Options\n");
 				throw new SharkException("unknown Options");
 			}
@@ -78,7 +82,6 @@ const char *shark::Option::process(int argc, char *argv[]){
 
 		case 'e':
 			cmd.execCmd = optarg;
-
 			break;
 
 		default:
@@ -112,6 +115,7 @@ std::string shark::Option::cmdGenerate(Command &opt){
 	cmd["execCmd"] = opt.execCmd;
 	cmd["ipAddr"] = opt.cfg.ipAddr;
 	cmd["netBandwidth"] = opt.cfg.netBandwidth;
+	cmd["mountType"] = opt.cfg.mountType;
 
 	sharkLog(SHARK_LOG_DEBUG, "cmd generate successfully\n");
 	return cmd.dump();
