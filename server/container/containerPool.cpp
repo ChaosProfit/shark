@@ -18,12 +18,12 @@
 #include "utils/exceptions.hpp"
 #include "utils/log.hpp"
 #include "utils/json.hpp"
-#include "cgroup/cgroup.hpp"
+
 
 shark::ContainerPool::ContainerPool(SharkConfig &cfg):
 sCfg(cfg){
 
-	Cgroup();
+	cgroup = std::make_shared<Cgroup>();
 
 	sharkLog(SHARK_LOG_INFO, "ContainerPool construct successfully\n");
 	return;
@@ -35,7 +35,7 @@ shark::ContainerPool::~ContainerPool(){
 		clist.remove(*container);
 	}
 
-	Cgroup();
+	delete cgroup;
 
 	sharkLog(SHARK_LOG_INFO, "ContainerPool destruct successfully\n");
 	return;

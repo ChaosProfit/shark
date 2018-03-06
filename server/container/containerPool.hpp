@@ -22,6 +22,7 @@
 #include "utils/threadQueue.hpp"
 #include "utils/command.hpp"
 #include "config/containerConfig.hpp"
+#include "cgroup/cgroup.hpp"
 
 namespace shark {
 	class ContainerPool{
@@ -46,6 +47,7 @@ namespace shark {
 		std::list<Container *> clist;
 		pthread_t containerThread = 0;
 		SharkConfig &sCfg;
+		std::shared_ptr<Cgroup> cgroup = NULL;
 	};
 }
 

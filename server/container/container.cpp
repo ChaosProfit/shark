@@ -156,7 +156,8 @@ int shark::Container::dftCfgInit(){
 	return 0;
 }
 
-shark::Container::Container(ContainerConfig &cCfgArg, SharkConfig &sCfgArg):cCfg(cCfgArg), sCfg(sCfgArg){
+shark::Container::Container(ContainerConfig &cCfgArg, SharkConfig &sCfgArg, Cgroup &cgrp):
+cCfg(cCfgArg), sCfg(sCfgArg), cgroup(cgrp){
 	int ret = 0;
 
 	ret = dftCfgInit();

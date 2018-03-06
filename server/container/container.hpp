@@ -23,11 +23,12 @@
 #include "utils/command.hpp"
 #include "network/containerNetwork.hpp"
 #include "config/containerConfig.hpp"
+#include "cgroup/cgroup.hpp"
 
 namespace shark {
 	class Container{
 	public:
-		Container(ContainerConfig &cCfg, SharkConfig &sCfg);
+		Container(ContainerConfig &cCfg, SharkConfig &sCfg, Cgroup &cgrp);
 		~Container();
 
 		int checkPoint();
@@ -64,6 +65,8 @@ namespace shark {
 		std::list<Process *> processList;
 
 		ContainerNetwork *cNetwork;
+
+		Cgroup &cgroup;
 
 		const static int SHORT_ID_LENGTH = 32;
 	};

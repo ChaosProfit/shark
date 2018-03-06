@@ -24,6 +24,9 @@ namespace shark{
 		std::string netBandwidth;
 		std::string mountPath;
 		std::string mountType;
+		std::string cpuSelect;
+		std::string cpuQuota;
+		std::string memQuota;
 	}Config;
 
 	typedef struct{

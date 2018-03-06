@@ -8,6 +8,9 @@
 #ifndef LIBCONTAINER_CGROUP_CGROUP_HPP_
 #define LIBCONTAINER_CGROUP_CGROUP_HPP_
 
+#include <vector>
+#include <string>
+
 #include <stddef.h>
 
 namespace shark{
@@ -24,7 +27,15 @@ namespace shark{
 		int addLeaf(CgroupConfig &cfg);
 		int delLeaf(CgroupConfig &cfg);
 		int addTask(std::string id, int pid);
+
+		int setCpuSelect(std::string id, int cpuNum);
+		int setCpuQuota(std::string id, int quota);
+		int setMemQuota(std::string id, int quota);
 	private:
+		int setIntValue(const char *path, int value, bool append);
+		int setStrValue(const char *path, const char *value, bool append);
+
+		int getValue();
 	};
 
 	std::vector<std::string> subModules = {"devices", "perf_event", "memory", "cpuset",
