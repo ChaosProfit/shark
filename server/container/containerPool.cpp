@@ -35,8 +35,6 @@ shark::ContainerPool::~ContainerPool(){
 		clist.remove(*container);
 	}
 
-	delete cgroup;
-
 	sharkLog(SHARK_LOG_INFO, "ContainerPool destruct successfully\n");
 	return;
 }
@@ -137,7 +135,7 @@ int shark::ContainerPool::execContainer(struct Command &cmd){
 int shark::ContainerPool::createContainer(struct Command &cmd){
 	int ret = 0;
 
-	Container *c = new Container(cmd.cfg, sCfg);
+	Container *c = new Container(cmd.cfg, sCfg, *cgroup);
 
 	ret = c->start();
 	if(ret < 0){

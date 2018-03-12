@@ -213,7 +213,8 @@ int shark::Container::cmdSend(std::string &execCmd){
 int shark::Container::addProcess(Process *p){
 	processList.push_back(p);
 
-	sharkLog(SHARK_LOG_DEBUG, "addProcess successfully\n");
+	cgroup.addTask(id, p->getPid());
+	sharkLog(SHARK_LOG_DEBUG, "container %s addProcess %d successfully\n", id.data(), p->getPid());
 	return 0;
 }
 
