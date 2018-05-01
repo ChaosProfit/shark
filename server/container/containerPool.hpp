@@ -24,7 +24,7 @@
 #include "config/containerConfig.hpp"
 #include "cgroup/cgroup.hpp"
 
-namespace shark  {
+namespace shark {
 class ContainerPool {
  public:
 	std::string cmdProcess(Command *cmd);

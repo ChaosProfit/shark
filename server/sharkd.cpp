@@ -37,7 +37,6 @@ shark::Sharkd::Sharkd() {
 }
 
 shark::Sharkd::~Sharkd() {
-
 	sharkLog(SHARK_LOG_INFO, "Sharkd destruct successfully");
 }
 
