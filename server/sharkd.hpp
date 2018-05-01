@@ -9,6 +9,7 @@
 #define SHARKD_HPP_
 
 #include <string>
+#include <memory>
 
 #include "network/globalNetwork.hpp"
 #include "config/globalConfig.hpp"
@@ -25,11 +26,14 @@ class Sharkd {
 
 	int run();
  private:
-	GlobalConfig *gConfig = NULL;
+	GlobalConfig *gConfig = nullptr;
 	SharkConfig sCfg;
-	ContainerPool *containerPool = NULL;
-	CliServer *cliServer = NULL;
-	GlobalNetwork *gNetwork = NULL;
+	std::unique_ptr<ContainerPool> containerPool = nullptr;
+	//	ContainerPool *containerPool = nullptr;
+	std::unique_ptr<CliServer> cliServer = nullptr;
+//	CliServer *cliServer = nullptr;
+//	GlobalNetwork *gNetwork = nullptr;
+	std::unique_ptr<GlobalNetwork> gNetwork = nullptr;
 };
 }  // namespace shark
 

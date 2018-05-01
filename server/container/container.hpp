@@ -28,6 +28,11 @@
 	Container class defines a container.
 */
 namespace shark  {
+
+void signalProcessFunc(int sig);
+int initSignalProcess();
+int manageProcessFunc(void *args);
+
 class Container {
  public:
 	Container(ContainerConfig &cCfg, SharkConfig &sCfg, Cgroup &cgrp);
@@ -61,7 +66,7 @@ class Container {
 	int idInit();
 	int dftCfgInit();
 	int initManageProcess();
-	Process *manageProcess = NULL;
+	Process *manageProcess = nullptr;
 	int manageProcessPipe[2] =  {0};
 
 	std::string id;

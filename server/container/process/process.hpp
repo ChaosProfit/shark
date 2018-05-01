@@ -42,13 +42,13 @@ class Process {
 	std::string execCmd;
 
 	int execFunction();
-	int (*funcExecCallback)(void *args) = NULL;
+	int (*funcExecCallback)(void *args) = nullptr;
 
 	int stackSize;
 	int cloneFlags;
 	void *stackPtr;
 	int pid = 0;
-	void *execFuncArg = NULL;
+	void *execFuncArg = nullptr;
 	std::list<Process *> childProcessList;
 };
 }  // namespace shark

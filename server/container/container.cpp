@@ -23,19 +23,19 @@
 #include "utils/log.hpp"
 #include "process/process.hpp"
 
-int logFile(const char *data) {
-	std::ofstream log_file;
+//int logFile(const char *data) {
+//	std::ofstream log_file;
+//
+//	log_file.open("/tmp/test.log");
+//	log_file.write("output:", strlen("output:"));
+//	log_file.write(data, strlen(data));
+//	log_file.write("\n", strlen("\n"));
+//	log_file.close();
+//
+//	return 0;
+//}
 
-	log_file.open("/tmp/test.log");
-	log_file.write("output:", strlen("output:"));
-	log_file.write(data, strlen(data));
-	log_file.write("\n", strlen("\n"));
-	log_file.close();
-
-	return 0;
-}
-
-void signalProcessFunc(int sig) {
+void shark::signalProcessFunc(int sig) {
 	switch(sig) {
 		case SIGPIPE:
 			sharkLog(SHARK_LOG_DEBUG, "catch a SIGPIPE signal\n");
@@ -53,7 +53,7 @@ void signalProcessFunc(int sig) {
 		case SIGCHLD:
 			sharkLog(SHARK_LOG_DEBUG, "catch a SIGCHLD signal\n");
 
-			wait(NULL);
+			wait(nullptr);
 			break;
 		default:
 			sharkLog(SHARK_LOG_DEBUG, "catch a signal:%d, unprocessed\n", sig);
@@ -64,7 +64,7 @@ void signalProcessFunc(int sig) {
 	return;
 }
 
-int initSignalProcess() {
+int shark::initSignalProcess() {
 	struct sigaction st_act =  {0};
 	st_act.sa_flags = 0;
 	st_act.sa_handler = signalProcessFunc;
@@ -74,22 +74,22 @@ int initSignalProcess() {
 		return -1;
 	}
 
-	if (sigaction(SIGPIPE, &st_act, NULL) != 0) {
+	if (sigaction(SIGPIPE, &st_act, nullptr) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGPIPE sigaction error\n");
 		return -1;
 	}
 
-	if (sigaction(SIGCHLD, &st_act, NULL) != 0) {
+	if (sigaction(SIGCHLD, &st_act, nullptr) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGCHLD sigaction error\n");
 		return -1;
 	}
 
-	if (sigaction(SIGINT, &st_act, NULL) != 0) {
+	if (sigaction(SIGINT, &st_act, nullptr) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGINT sigaction error\n");
 		return -1;
 	}
 
-	if (sigaction(SIGTERM, &st_act, NULL) != 0) {
+	if (sigaction(SIGTERM, &st_act, nullptr) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGTERM sigaction error\n");
 		return -1;
 	}
@@ -98,7 +98,7 @@ int initSignalProcess() {
 	return 0;
 }
 
-int manageProcessFunc(void *args) {
+int shark::manageProcessFunc(void *args) {
 	shark::Container *container = (shark::Container *)args;
 	int ret = 0;
 	int readPipe = container->getReadPipe();

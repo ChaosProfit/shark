@@ -21,7 +21,7 @@ class ThreadQueue {
  public:
 	ThreadQueue() {
 		int ret = 0;
-		ret = pthread_cond_init(&newElementCond, NULL);
+		ret = pthread_cond_init(&newElementCond, nullptr);
 		if (ret < 0) {
 			throw new SharkException("pthread cond init fail");
 		}

@@ -39,11 +39,11 @@ class CliClient {
 	int timeout = 0;
 	const char* SHARK_INTERFACE_PATH = "/run/shark/cli";
 	int RCV_BUF_SIZE = 1024;
-	void *rcvBuf = NULL;
+	void *rcvBuf = nullptr;
 	struct sockaddr_un addr;
 
-	int (*dataProcess)(void *object, void *data) = NULL;
-	void *releObject = NULL;
+	int (*dataProcess)(void *object, void *data) = nullptr;
+	void *releObject = nullptr;
 };
 }  // namespace shark
 

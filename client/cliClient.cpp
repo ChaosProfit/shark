@@ -20,7 +20,7 @@
 
 shark::CliClient::CliClient() {
 	rcvBuf = malloc(RCV_BUF_SIZE);
-	if (rcvBuf == NULL) {
+	if (rcvBuf == nullptr) {
 		sharkLog(SHARK_LOG_ERR, "rcv buf malloc failed\n");
 		throw new SharkException("rcvBuf malloc failed");
 	}
@@ -31,7 +31,7 @@ shark::CliClient::CliClient() {
 }
 
 shark::CliClient::~CliClient() {
-	if (rcvBuf != NULL) {
+	if (rcvBuf != nullptr) {
 		free(rcvBuf);
 	}
 

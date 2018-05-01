@@ -25,7 +25,7 @@ int binExecCallback(void *args) {
 	sharkLog(SHARK_LOG_DEBUG, "uid:%d, gid:%d\n", getuid(), getgid());
 	sharkLog(SHARK_LOG_DEBUG, "cmd:%s", cmd.data());
 
-	ret = execlp("bash", "bash", "-c", cmd.data(), NULL);
+	ret = execlp("bash", "bash", "-c", cmd.data(), nullptr);
 
 	sharkLog(SHARK_LOG_DEBUG, "ret:%d, err:%d, cmd:%s\n", ret, errno, cmd.data());
 	return ret;
@@ -71,7 +71,7 @@ shark::Process::~Process() {
 int shark::Process::exec() {
 	int ret = 0;
 
-   if (funcExecCallback == NULL) {
+   if (funcExecCallback == nullptr) {
 	   sharkLog(SHARK_LOG_ERR, "process exec failed\n");
 	   return -1;
     }

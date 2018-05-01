@@ -26,8 +26,8 @@ class Shark {
 	int retProcess(COMMAND_TYPE type, const char *ret);
 
 	int timeOutProcess();
-	CliClient *cliClient = NULL;
-	Option *option = NULL;
+	CliClient *cliClient = nullptr;
+	Option *option = nullptr;
 };
 }  // namespace shark
 

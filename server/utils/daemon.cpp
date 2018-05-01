@@ -24,28 +24,8 @@
 
 static const char *SharkdParentDir = "/run/shark";
 
-shark::Sharkd *sharkdPtrStore(SHARKD_PTR_OPERATE type, shark::Sharkd *ptr = NULL) {
-	static shark::Sharkd *sharkdPtr = NULL;
-
-	if (type == SHARKD_PTR_OPERATE::SHARKD_PTR_GET) {
-		return sharkdPtr;
-	} else if (type == SHARKD_PTR_OPERATE::SHARKD_PTR_SAVE) {
-		sharkdPtr = ptr;
-	}
-
-	return NULL;
-}
-
-
 static void sharkExit() {
 	int ret = 0;
-
-	shark::Sharkd *sharkd = sharkdPtrStore(SHARKD_PTR_OPERATE::SHARKD_PTR_GET);
-
-	sharkLog(SHARK_LOG_INFO, "Sharkd began to exit\n");
-	if (sharkd != NULL) {
-		delete sharkd;
-	}
 
 	ret = rmDir(SharkdParentDir);
 	if (ret < 0) {
@@ -72,7 +52,7 @@ static void signalProcess(int sig) {
 		sharkExit();
 		break;
 	case SIGCHLD:
-		wait(NULL);
+		wait(nullptr);
 		sharkLog(SHARK_LOG_INFO, "catch a SIGCHLD signal\n");
 		break;
 	default:
@@ -90,22 +70,22 @@ static int signalInit() {
 		return -1;
 	}
 
-	if (sigaction(SIGPIPE, &st_act, NULL) != 0) {
+	if (sigaction(SIGPIPE, &st_act, nullptr) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGPIPE sigaction error\n");
 		return -1;
 	}
 
-	if (sigaction(SIGCHLD, &st_act, NULL) != 0) {
+	if (sigaction(SIGCHLD, &st_act, nullptr) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGCHLD sigaction error\n");
 		return -1;
 	}
 
-	if (sigaction(SIGINT, &st_act, NULL) != 0) {
+	if (sigaction(SIGINT, &st_act, nullptr) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGINT sigaction error\n");
 		return -1;
 	}
 
-	if (sigaction(SIGTERM, &st_act, NULL) != 0) {
+	if (sigaction(SIGTERM, &st_act, nullptr) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGITERM sigaction error\n");
 		return -1;
 	}

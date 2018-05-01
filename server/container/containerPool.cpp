@@ -120,7 +120,7 @@ std::string shark::ContainerPool::cmdProcess(Command *cmd) {
 int shark::ContainerPool::execContainer(struct Command &cmd) {
 	auto c = getContainer(cmd.cfg.id);
 
-	if (c == NULL) {
+	if (c == nullptr) {
 		sharkLog(SHARK_LOG_ERR, "execContainer failed\n");
 		return -1;
 	}
@@ -142,7 +142,7 @@ int shark::ContainerPool::createContainer(struct Command &cmd) {
 		return ret;
 	}
 
-	if (getContainer(c->getId()) != NULL) {
+	if (getContainer(c->getId()) != nullptr) {
 		sharkLog(SHARK_LOG_ERR, "addContainer %s faild\n", c->getId().data());
 		return -1;
 	}
@@ -159,7 +159,7 @@ int shark::ContainerPool::createContainer(struct Command &cmd) {
 
 int shark::ContainerPool::delContainer(struct Command &cmd) {
 	Container *cPtr = getContainer(cmd.cfg.id);
-	if (cPtr == NULL) {
+	if (cPtr == nullptr) {
 		sharkLog(SHARK_LOG_ERR, "delContainer %s faild\n", cmd.cfg.id.data());
 		return -1;
 	}
@@ -180,7 +180,7 @@ shark::Container *shark::ContainerPool::getContainer(std::string &id) {
 	}
 
 	sharkLog(SHARK_LOG_ERR, "getContainer %s faild\n", id.data());
-	return NULL;
+	return nullptr;
 }
 
 std::list<shark::Container *>& shark::ContainerPool::listContainer() {

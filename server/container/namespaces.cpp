@@ -15,39 +15,21 @@
 #include <iostream>
 #include <fstream>
 
+#include "container/namespaces.hpp"
 #include "utils/log.hpp"
 
-static int fileUpdate(char *filePath, char *value) {
-	std::ofstream file_inst;
-	file_inst.open(filePath);
+int shark::fileUpdate(char *filePath, char *value) {
+	std::ofstream file;
+	file.open(filePath);
 	snprintf(value, 128, "0 %d 1", getuid());
-	file_inst.write(value, strlen(value));
-	file_inst.close();
+	file.write(value, strlen(value));
+	file.close();
 
 	sharkLog(SHARK_LOG_DEBUG, "%s file update %s successfully\n", filePath, value);
 	return 0;
-
-//	int idFd = open(filePath, O_RDWR);
-//	if (idFd < 0) {
-//		sharkLog(SHARK_LOG_DEBUG, "%s open failed\n", filePath);
-//		return -1;
-//	}
-//
-//	snprintf(value, 128, "0 %d 1", getuid());
-//
-//	int ret = write(idFd, value, strlen(value));
-//	if ((unsigned)ret != strlen(value)) {
-//		sharkLog(SHARK_LOG_DEBUG, "%s write failed\n", filePath);
-//		return -1;
-//	}
-//
-//	close(idFd);
-
-//	sharkLog(SHARK_LOG_DEBUG, "%s file update %s successfully\n", filePath, value);
-//	return 0;
 }
 
-int userNsInit(int pid) {
+int shark::userNsInit(int pid) {
 	int ret = 0;
 	char filePath[128] =  {0};
 	char mapping[128] =  {0};
@@ -64,7 +46,7 @@ int userNsInit(int pid) {
 	return 0;
 }
 
-int utsNsInit(const char *hostname) {
+int shark::utsNsInit(const char *hostname) {
 	char tmpBuf[64] =  {0};
 	int ret = 0;
 

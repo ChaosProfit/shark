@@ -54,7 +54,7 @@ int rmDir(const char *dirPath) {
 
 	struct dirent *dir;
 	struct stat st;
-	while((dir = readdir(dirp)) != NULL) {
+	while((dir = readdir(dirp)) != nullptr) {
 		if ((strcmp(dir->d_name, ".") == 0) || (strcmp(dir->d_name, "..") == 0)) {
 			continue;
 		}
@@ -96,11 +96,11 @@ int cmdExecSync(const char *format, ...) {
 	va_end(argLst);
 
 	FILE *p_file = popen(argBuf, "r");
-	if (p_file == NULL) {
+	if (p_file == nullptr) {
 		sharkLog(SHARK_LOG_ERR, "%s exec failed\n", argBuf);
 		return -1;
 	}
-	while(fgets(retBuf, 256, p_file) != NULL)  {
+	while(fgets(retBuf, 256, p_file) != nullptr)  {
 		sharkLog(SHARK_LOG_DEBUG, "popen_ret:%s\n", retBuf);
 	}
 	pclose(p_file);
@@ -111,10 +111,10 @@ int cmdExecSync(const char *format, ...) {
 
 
 int dirInit() {
-	DIR *pd_var_dir = NULL;
+	DIR *pd_var_dir = nullptr;
 
 	pd_var_dir = opendir(SharkdParentDir);
-	if (pd_var_dir == NULL) {
+	if (pd_var_dir == nullptr) {
 		if (mkdir(SharkdParentDir, 0777) < 0) {
 			sharkLog(SHARK_LOG_ERR, "mkdir %s error\n", SharkdParentDir);
 			return -1;

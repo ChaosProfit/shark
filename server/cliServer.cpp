@@ -5,7 +5,7 @@
  *      Author: luguanglong
  */
 
-#include "cliServer.hpp"
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <string.h>
@@ -19,6 +19,7 @@
 #include "utils/exceptions.hpp"
 #include "utils/log.hpp"
 #include "utils/json.hpp"
+#include "cliServer.hpp"
 
 shark::CliServer::CliServer(ContainerPool &cPool) :
 cPool(cPool) {
@@ -49,7 +50,7 @@ cPool(cPool) {
 	}
 
 	rcvBuf = malloc(RCV_BUF_SIZE);
-	if (rcvBuf == NULL) {
+	if (rcvBuf == nullptr) {
 		sharkLog(SHARK_LOG_ERR, "rcv buf malloc failed\n");
 		throw new SharkException("rcvBuf malloc failed");
 	}
@@ -62,7 +63,7 @@ cPool(cPool) {
 }
 
 shark::CliServer::~CliServer() {
-	if (rcvBuf != NULL) {
+	if (rcvBuf != nullptr) {
 		free(rcvBuf);
 	}
 
@@ -149,7 +150,7 @@ void* shark::CliServer::threadFunc(void *arg) {
 
 	thisPtr->cliRecv();
 
-	return NULL;
+	return nullptr;
 }
 
 int shark::CliServer::threadInit() {

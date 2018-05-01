@@ -84,10 +84,10 @@ int shark::Shark::retProcess(COMMAND_TYPE type, const char* ret) {
 int shark::Shark::process(int argc, char *argv[]) {
 	const char *dataToSend = option->process(argc, argv);
 
-	if (dataToSend != NULL) {
+	if (dataToSend != nullptr) {
 		sharkLog(SHARK_LOG_DEBUG, "result:%s\n", dataToSend);
 		const char *dataPtr = (const char *)cliClient->dataSend(dataToSend, strlen(dataToSend));
-		if (dataPtr == NULL) {
+		if (dataPtr == nullptr) {
 			sharkLog(SHARK_LOG_DEBUG, "data send failed\n");
 			return -1;
 		}

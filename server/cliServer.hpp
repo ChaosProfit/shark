@@ -55,7 +55,7 @@ class CliServer {
 	int interfaceFd = 0;
 	const char* SHARK_INTERFACE_PATH = "/run/shark/cli";
 	int RCV_BUF_SIZE = 1024;
-	void *rcvBuf = NULL;
+	void *rcvBuf = nullptr;
 	struct sockaddr_un addr;
 };
 }  // namespace shark

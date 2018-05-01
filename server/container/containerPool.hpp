@@ -47,7 +47,7 @@ class ContainerPool {
 	std::list<Container *> clist;
 	pthread_t containerThread = 0;
 	SharkConfig &sCfg;
-	std::shared_ptr<Cgroup> cgroup = NULL;
+	std::shared_ptr<Cgroup> cgroup = nullptr;
 };
 }  // namespace shark
 

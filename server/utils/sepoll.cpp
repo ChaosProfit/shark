@@ -13,7 +13,7 @@
 #include "sepoll.hpp"
 #include "log.hpp"
 
-shark::Sepoll::Sepoll() : pst_epoll_events(NULL), epollFd(0) {
+shark::Sepoll::Sepoll() : pst_epoll_events(nullptr), epollFd(0) {
 	epollFd = epoll_create1(0);
 	if (epollFd < 0) {
 		sharkLog(SHARK_LOG_ERR, "listen epoll socket create fail\n");
@@ -22,7 +22,7 @@ shark::Sepoll::Sepoll() : pst_epoll_events(NULL), epollFd(0) {
 
 	this->pst_epoll_events = \
 	(struct epoll_event *)malloc(sizeof(struct epoll_event)*this->EPOLL_MAX_EVENTS);
-	if (this->pst_epoll_events == NULL) {
+	if (this->pst_epoll_events == nullptr) {
 		sharkLog(SHARK_LOG_ERR, "epoll events malloc fail\n");
 		throw new SharkException("Epoll events malloc fail");
 	}
@@ -32,9 +32,9 @@ shark::Sepoll::Sepoll() : pst_epoll_events(NULL), epollFd(0) {
 }
 
 shark::Sepoll::~Sepoll() {
-	if (this->pst_epoll_events != NULL) {
+	if (this->pst_epoll_events != nullptr) {
 		free(this->pst_epoll_events);
-		this->pst_epoll_events = NULL;
+		this->pst_epoll_events = nullptr;
 	}
 }
 

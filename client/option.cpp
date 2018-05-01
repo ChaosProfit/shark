@@ -38,7 +38,7 @@ const char *shark::Option::process(int argc, char *argv[]) {
 		printHelp();
 
 		sharkLog(SHARK_LOG_DEBUG, "optionProcess successfully\n");
-		return NULL;
+		return nullptr;
 	}
 
 	while((cnt = getopt_long(argc, argv, "c:e:", sharkOptions, &optionIndex)) != -1) {
@@ -87,7 +87,7 @@ const char *shark::Option::process(int argc, char *argv[]) {
 
 		default:
 			printHelp();
-			return NULL;
+			return nullptr;
 		}
 	}
 

@@ -131,12 +131,12 @@ int shark::GlobalConfig::configRead() {
 //
 //	FILE *fPtr = fopen(configFile.data(), "r");
 //
-//	if (fPtr == NULL) {
+//	if (fPtr == nullptr) {
 //		sharkLog(SHARK_LOG_ERR, "open %s failed\n", configFile.data());
 //		return -1;
 //	}
 //
-//	while(fgets(readBuf, 256, fPtr) != NULL) {
+//	while(fgets(readBuf, 256, fPtr) != nullptr) {
 //		if ((readBuf[0] == '#') || (readBuf[0] == ' ')) {
 //			continue;
 //		}

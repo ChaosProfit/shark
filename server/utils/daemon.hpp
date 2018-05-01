@@ -16,6 +16,4 @@ enum class SHARKD_PTR_OPERATE {
 	SHARKD_PTR_GET
 };
 
-shark::Sharkd *sharkdPtrStore(SHARKD_PTR_OPERATE type, shark::Sharkd *ptr);
-
 #endif /* UTILS_DAEMON_HPP_ */
