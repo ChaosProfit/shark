@@ -5,8 +5,9 @@
  *      Author: luguanglong
  */
 
-#include <memory>
 #include <string.h>
+
+#include <memory>
 
 #include "sharkd.hpp"
 #include "utils/sepoll.hpp"
@@ -48,7 +49,7 @@ int main(int argc, char *argv[]) {
 	daemonInit();
 
 	shark::Sharkd	*sharkd = new shark::Sharkd();
-	sharkdPtrStore(SHARKD_PTR_SAVE, sharkd);
+	sharkdPtrStore(SHARKD_PTR_OPERATE::SHARKD_PTR_SAVE, sharkd);
 	sharkd->run();
 
 	return 0;

@@ -10,6 +10,8 @@
 #include <string.h>
 #include <getopt.h>
 
+#include <iostream>
+#include <fstream>
 #include <regex>
 
 #include "globalConfig.hpp"
@@ -95,7 +97,7 @@ int shark::GlobalConfig::configLineProcess(char *line) {
 		}
 	} else if (key.compare("network-type") == 0) {
 		if (value.compare("bridge") == 0) {
-			gConfig->net.type = NETWORK_BRIDGE;
+			gConfig->net.type = NETWORK_TYPE::NETWORK_BRIDGE;
 		}
 	} else if (key.compare("container-communicate") == 0) {
 		if (value.compare("True") == 0) {
@@ -111,15 +113,10 @@ int shark::GlobalConfig::configLineProcess(char *line) {
 
 int shark::GlobalConfig::configRead() {
 	char readBuf[256] =  {0};
-
-	FILE *fPtr = fopen(configFile.data(), "r");
-
-	if (fPtr == NULL) {
-		sharkLog(SHARK_LOG_ERR, "open %s failed\n", configFile.data());
-		return -1;
-	}
-
-	while(fgets(readBuf, 256, fPtr) != NULL) {
+	std::ifstream config_file;
+	std::string tm;
+	config_file.open(configFile.data());
+	while(config_file.getline(readBuf, sizeof(readBuf))){
 		if ((readBuf[0] == '#') || (readBuf[0] == ' ')) {
 			continue;
 		}
@@ -128,10 +125,30 @@ int shark::GlobalConfig::configRead() {
 		memset(readBuf, 0, 256);
 	}
 
-	fclose(fPtr);
-
+	config_file.close();
 	sharkLog(SHARK_LOG_DEBUG, "configRead successfully\n");
 	return 0;
+//
+//	FILE *fPtr = fopen(configFile.data(), "r");
+//
+//	if (fPtr == NULL) {
+//		sharkLog(SHARK_LOG_ERR, "open %s failed\n", configFile.data());
+//		return -1;
+//	}
+//
+//	while(fgets(readBuf, 256, fPtr) != NULL) {
+//		if ((readBuf[0] == '#') || (readBuf[0] == ' ')) {
+//			continue;
+//		}
+//
+//		configLineProcess(readBuf);
+//		memset(readBuf, 0, 256);
+//	}
+//
+//	fclose(fPtr);
+//
+//	sharkLog(SHARK_LOG_DEBUG, "configRead successfully\n");
+//	return 0;
 }
 
 int shark::ipv4AddrPreprocess(Ipv4Addr &addr) {

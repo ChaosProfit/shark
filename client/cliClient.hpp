@@ -16,11 +16,11 @@
 #include <memory>
 
 namespace shark {
-typedef enum {
+enum class INTERFACE_TYPE {
 	INTERFACE_NONE = 0,
 	INTERFACE_SYNC,
 	INTERFACE_ASYNC
-}INTERFACE_TYPE;
+};
 
 class CliClient {
  public:
@@ -34,7 +34,7 @@ class CliClient {
 
 	pthread_t receiveThread = 0;
 
-	INTERFACE_TYPE syncType = INTERFACE_NONE;
+	INTERFACE_TYPE syncType = INTERFACE_TYPE::INTERFACE_NONE;
 
 	int timeout = 0;
 	const char* SHARK_INTERFACE_PATH = "/run/shark/cli";

@@ -38,7 +38,7 @@ int shark::Shark::timeOutProcess() {
 	return 0;
 }
 
-int shark::Shark::retProcess(int type, const char* ret) {
+int shark::Shark::retProcess(COMMAND_TYPE type, const char* ret) {
 	sharkLog(SHARK_LOG_DEBUG, "ret:%s\n", ret);
 	nlohmann::json retJson = nlohmann::json::parse(std::string(ret));
 	nlohmann::json dataJson;
@@ -49,16 +49,16 @@ int shark::Shark::retProcess(int type, const char* ret) {
 	}
 
 	switch(type) {
-	case COMMAND_CREATE:
+	case COMMAND_TYPE::COMMAND_CREATE:
 		break;
 
-	case COMMAND_EXEC:
+	case COMMAND_TYPE::COMMAND_EXEC:
 		break;
 
-	case COMMAND_DELETE:
+	case COMMAND_TYPE::COMMAND_DELETE:
 		break;
 
-	case COMMAND_LIST:
+	case COMMAND_TYPE::COMMAND_LIST:
 		if (retJson["data"].empty() == 1) {
 			std::cout << "List process failed\n";
 			return -1;

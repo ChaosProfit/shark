@@ -11,10 +11,10 @@
 extern int daemonInit();
 extern int dirInit();
 
-typedef enum {
+enum class SHARKD_PTR_OPERATE {
 	SHARKD_PTR_SAVE = 1,
 	SHARKD_PTR_GET
-} SHARKD_PTR_OPERATE;
+};
 
 shark::Sharkd *sharkdPtrStore(SHARKD_PTR_OPERATE type, shark::Sharkd *ptr);
 

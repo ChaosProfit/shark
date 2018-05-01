@@ -13,6 +13,8 @@
 #include <sys/wait.h>
 #include <limits.h>
 
+#include <iostream>
+#include <fstream>
 #include <list>
 
 #include "container.hpp"
@@ -22,11 +24,13 @@
 #include "process/process.hpp"
 
 int logFile(const char *data) {
-	int fd = open("/tmp/test.log", O_CREAT|O_APPEND|O_RDWR, 0777);
-	write(fd, "output:", strlen("output:"));
-	write(fd, data, strlen(data));
-	write(fd, "\n", strlen("\n"));
-	close(fd);
+	std::ofstream log_file;
+
+	log_file.open("/tmp/test.log");
+	log_file.write("output:", strlen("output:"));
+	log_file.write(data, strlen(data));
+	log_file.write("\n", strlen("\n"));
+	log_file.close();
 
 	return 0;
 }

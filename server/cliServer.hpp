@@ -21,11 +21,11 @@
 #include "utils/command.hpp"
 
 namespace shark {
-typedef enum {
+enum class INTERFACE_TYPE {
 	INTERFACE_NONE = 0,
 	INTERFACE_SYNC,
 	INTERFACE_ASYNC
-}INTERFACE_TYPE;
+};
 
 class CliServer {
  public:
@@ -47,7 +47,7 @@ class CliServer {
 
 	pthread_t receiveThread = 0;
 
-	INTERFACE_TYPE syncType = INTERFACE_NONE;
+	INTERFACE_TYPE syncType = INTERFACE_TYPE::INTERFACE_NONE;
 
 	ContainerPool &cPool;
 	int timeout = 0;

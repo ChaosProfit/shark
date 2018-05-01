@@ -12,30 +12,39 @@
 #include <fcntl.h>
 #include <string.h>
 
-
+#include <iostream>
 #include <fstream>
 
 #include "utils/log.hpp"
 
 static int fileUpdate(char *filePath, char *value) {
-	int idFd = open(filePath, O_RDWR);
-	if (idFd < 0) {
-		sharkLog(SHARK_LOG_DEBUG, "%s open failed\n", filePath);
-		return -1;
-	}
-
+	std::ofstream file_inst;
+	file_inst.open(filePath);
 	snprintf(value, 128, "0 %d 1", getuid());
-
-	int ret = write(idFd, value, strlen(value));
-	if ((unsigned)ret != strlen(value)) {
-		sharkLog(SHARK_LOG_DEBUG, "%s write failed\n", filePath);
-		return -1;
-	}
-
-	close(idFd);
+	file_inst.write(value, strlen(value));
+	file_inst.close();
 
 	sharkLog(SHARK_LOG_DEBUG, "%s file update %s successfully\n", filePath, value);
 	return 0;
+
+//	int idFd = open(filePath, O_RDWR);
+//	if (idFd < 0) {
+//		sharkLog(SHARK_LOG_DEBUG, "%s open failed\n", filePath);
+//		return -1;
+//	}
+//
+//	snprintf(value, 128, "0 %d 1", getuid());
+//
+//	int ret = write(idFd, value, strlen(value));
+//	if ((unsigned)ret != strlen(value)) {
+//		sharkLog(SHARK_LOG_DEBUG, "%s write failed\n", filePath);
+//		return -1;
+//	}
+//
+//	close(idFd);
+
+//	sharkLog(SHARK_LOG_DEBUG, "%s file update %s successfully\n", filePath, value);
+//	return 0;
 }
 
 int userNsInit(int pid) {

@@ -15,10 +15,10 @@
 #include <string>
 
 namespace shark {
-typedef enum {
+enum class NETWORK_TYPE {
 	NETWORK_NONE = 0,
 	NETWORK_BRIDGE,
-} NETWORK_TYPE;
+};
 
 union IntegerArrary {
 	unsigned int integer;

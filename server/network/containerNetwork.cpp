@@ -115,7 +115,7 @@ shortId(sId), gnCfg(gnCfgArg), cnCfg(cnCfgArg) {
 	ret = commonInit();
 
 	switch(gnCfg.type) {
-	case NETWORK_BRIDGE:
+	case NETWORK_TYPE::NETWORK_BRIDGE:
 		ret = bridgeInit();
 		break;
 	default:
@@ -138,7 +138,7 @@ shark::ContainerNetwork::~ContainerNetwork() {
 	}
 
 	switch(gnCfg.type) {
-	case NETWORK_BRIDGE:
+	case NETWORK_TYPE::NETWORK_BRIDGE:
 		bridgeExit();
 		break;
 	default:

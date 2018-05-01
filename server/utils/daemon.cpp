@@ -27,9 +27,9 @@ static const char *SharkdParentDir = "/run/shark";
 shark::Sharkd *sharkdPtrStore(SHARKD_PTR_OPERATE type, shark::Sharkd *ptr = NULL) {
 	static shark::Sharkd *sharkdPtr = NULL;
 
-	if (type == SHARKD_PTR_GET) {
+	if (type == SHARKD_PTR_OPERATE::SHARKD_PTR_GET) {
 		return sharkdPtr;
-	} else if (type == SHARKD_PTR_SAVE) {
+	} else if (type == SHARKD_PTR_OPERATE::SHARKD_PTR_SAVE) {
 		sharkdPtr = ptr;
 	}
 
@@ -40,7 +40,7 @@ shark::Sharkd *sharkdPtrStore(SHARKD_PTR_OPERATE type, shark::Sharkd *ptr = NULL
 static void sharkExit() {
 	int ret = 0;
 
-	shark::Sharkd *sharkd = sharkdPtrStore(SHARKD_PTR_GET);
+	shark::Sharkd *sharkd = sharkdPtrStore(SHARKD_PTR_OPERATE::SHARKD_PTR_GET);
 
 	sharkLog(SHARK_LOG_INFO, "Sharkd began to exit\n");
 	if (sharkd != NULL) {

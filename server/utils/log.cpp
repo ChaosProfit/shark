@@ -13,6 +13,8 @@
 #include <time.h>
 #include <stdarg.h>
 
+#include <iostream>
+#include <fstream>
 #include <string>
 
 #include "log.hpp"
@@ -48,18 +50,19 @@ void sharkPrint(int debugMode, char *file, int line, const char *format ,...) {
 		return;
 	}
 
-	int fd = open(LOG_FILE_PATH, O_CREAT|O_APPEND|O_RDWR, 00777);
-
+	std::ofstream log_file;
+	log_file.open(LOG_FILE_PATH);
 	snprintf(outBuf, LOG_BUF_SIZE, "%s, %s, file:%s, line:%d:", logLevel, timeStr, file, line);
-	write(fd, outBuf, strlen(outBuf));
+	log_file.write(outBuf, strlen(outBuf));
 
 	va_list argLst;
 	va_start(argLst, format);
 	vsnprintf(outBuf, LOG_BUF_SIZE, format, argLst);
-	write(fd, outBuf, strlen(outBuf));
 	va_end(argLst);
+	log_file.write(outBuf, strlen(outBuf));
 
-	close(fd);
+	log_file.close();
+
 	return;
 }
 

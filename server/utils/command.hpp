@@ -17,14 +17,14 @@
 #include "config/containerConfig.hpp"
 
 namespace shark {
-typedef enum  {
+enum class COMMAND_TYPE {
 	COMMAND_BLANK = 0,
 	COMMAND_CREATE,
 	COMMAND_DELETE,
 	COMMAND_EXEC,
 	COMMAND_LIST,
 	COMMAND_MAX
-} COMMAND_TYPE;
+};
 
 struct Command {
 	COMMAND_TYPE type;

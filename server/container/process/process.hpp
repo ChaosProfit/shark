@@ -16,11 +16,6 @@
 #define DEFAULT_STACK_SIZE  (1024*1024)
 
 namespace shark  {
-typedef enum  {
-	EXEC_BIN = 0,
-	EXEC_FUNC = 1,
-} EXEC_TYPE;
-
 int execFunc(void *args);
 
 class Process {

@@ -79,7 +79,7 @@ std::string shark::ContainerPool::cmdProcess(Command *cmd) {
 	std::string data;
 
 	switch(cmd->type) {
-	case COMMAND_CREATE:
+	case COMMAND_TYPE::COMMAND_CREATE:
 		ret = createContainer(*cmd);
 		sharkLog(SHARK_LOG_DEBUG, "create_ret:%d\n", ret);
 		retStr = retToJson(ret);
@@ -87,21 +87,21 @@ std::string shark::ContainerPool::cmdProcess(Command *cmd) {
 		sharkLog(SHARK_LOG_DEBUG, "create_ret:%s\n", retStr.data());
 		return retStr;
 
-	case COMMAND_DELETE:
+	case COMMAND_TYPE::COMMAND_DELETE:
 			ret = delContainer(*cmd);
 			retStr = retToJson(ret);
 
 			sharkLog(SHARK_LOG_DEBUG, "create_ret:%s\n", retStr.data());
 			return retStr;
 
-	case COMMAND_EXEC:
+	case COMMAND_TYPE::COMMAND_EXEC:
 		ret = execContainer(*cmd);
 		retStr = retToJson(ret);
 
 		sharkLog(SHARK_LOG_DEBUG, "exec_ret:%s\n", retStr.data());
 		return retStr;
 
-	case COMMAND_LIST:
+	case COMMAND_TYPE::COMMAND_LIST:
 		data = listCmdProcess();
 		retStr = retToJson(data);
 

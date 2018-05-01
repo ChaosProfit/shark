@@ -5,6 +5,9 @@
  *      Author: luguanglong
  */
 
+#include <string.h>
+
+#include <iostream>
 #include <fstream>
 
 #include "globalNetwork.hpp"
@@ -13,24 +16,13 @@
 
 int shark::GlobalNetwork::flagGet(char *flagPath, int &value) {
 	int ret = 0;
-
-	FILE *fPtr = fopen(flagPath, "r");
-	if (fPtr == NULL) {
-		sharkLog(SHARK_LOG_ERR, "%s open failed\n", flagPath);
-		return -1;
-	}
-
+	std::ifstream flag_path;
 	char buf[36] =  {0};
-	ret = fread(buf, 1, 36, fPtr);
-	if (ret < 0) {
-		sharkLog(SHARK_LOG_ERR, "%s read failed\n", flagPath);
-		fclose(fPtr);
-		return -1;
-	}
 
-	fclose(fPtr);
-
-	value = atoi(buf);
+	flag_path.open(flagPath);
+	flag_path.read(buf, sizeof(buf));
+	flag_path.close();
+	value = std::atoi(buf);
 
 	sharkLog(SHARK_LOG_DEBUG, "get flag %d from %s\n", value, flagPath);
 	return ret;
@@ -38,24 +30,13 @@ int shark::GlobalNetwork::flagGet(char *flagPath, int &value) {
 
 int shark::GlobalNetwork::flagSet(char *flagPath, int value) {
 	int ret = 0;
-
-	FILE *fPtr = fopen(flagPath, "w");
-	if (fPtr == NULL) {
-		sharkLog(SHARK_LOG_ERR, "%s open failed\n", flagPath);
-		return -1;
-	}
+	std::ofstream flag_path;
 
 	char buf[36] =  {0};
-	snprintf(buf, 36, "%d", value);
-
-	ret = fwrite(buf, 1, 36, fPtr);
-	if (ret < 0) {
-		sharkLog(SHARK_LOG_ERR, "%s write failed\n", flagPath);
-		fclose(fPtr);
-		return -1;
-	}
-
-	fclose(fPtr);
+	snprintf(buf, sizeof(buf), "%d", value);
+	flag_path.open(flagPath);
+	flag_path.write(buf, strlen(buf));
+	flag_path.close();
 
 	sharkLog(SHARK_LOG_DEBUG, "set flag %d to %s\n", value, flagPath);
 	return ret;
@@ -165,7 +146,7 @@ nCfg(cfg) {
 	}
 
 	switch(nCfg.type) {
-	case NETWORK_BRIDGE:
+	case NETWORK_TYPE::NETWORK_BRIDGE:
 		ret = bridgeInit();
 		break;
 	default:
@@ -185,7 +166,7 @@ shark::GlobalNetwork::~GlobalNetwork() {
 	}
 
 	switch(nCfg.type) {
-	case NETWORK_BRIDGE:
+	case NETWORK_TYPE::NETWORK_BRIDGE:
 		ret = bridgeExit();
 		break;
 	default:

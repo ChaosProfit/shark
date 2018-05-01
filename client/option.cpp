@@ -67,13 +67,13 @@ const char *shark::Option::process(int argc, char *argv[]) {
 
 		case 'c':
 			if (strcmp(optarg, "exec") == 0) {
-				cmd.type = COMMAND_EXEC;
+				cmd.type = COMMAND_TYPE::COMMAND_EXEC;
 			} else if (strcmp(optarg, "create") == 0) {
-				cmd.type = COMMAND_CREATE;
+				cmd.type = COMMAND_TYPE::COMMAND_CREATE;
 			} else if (strcmp(optarg, "list") == 0) {
-				cmd.type = COMMAND_LIST;
+				cmd.type = COMMAND_TYPE::COMMAND_LIST;
 			} else if (strcmp(optarg, "delete") == 0) {
-				cmd.type = COMMAND_DELETE;
+				cmd.type = COMMAND_TYPE::COMMAND_DELETE;
 			} else {
 				sharkLog(SHARK_LOG_ERR, "unknown Command Type\n");
 				throw new SharkException("unknown Command Type");

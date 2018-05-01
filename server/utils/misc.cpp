@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <iostream>
+#include <fstream>
 #include <string>
 #include <regex>
 
@@ -25,8 +27,8 @@
 static const char *SharkdParentDir = "/run/shark";
 
 int sharkdPidUpdate() {
-	int pidFd = 0;
-	int ret = 0;
+//	int pidFd = 0;
+//	int ret = 0;
 	std::string pidPath(SharkdParentDir);
 	char pidStr[36] =  {0};
 	snprintf(pidStr, 36, "%d", getpid());
@@ -34,21 +36,12 @@ int sharkdPidUpdate() {
 	pidPath.append("/");
 	pidPath.append("sharkd.pid");
 
-	pidFd = open(pidPath.data(), O_CREAT|O_RDWR);
-	if (pidFd < 0) {
-		sharkLog(SHARK_LOG_ERR, "%s open failed\n", pidPath.data());
-		return -1;
-	}
-
-	ret = write(pidFd, pidStr, strlen(pidStr));
-	if (ret != (signed int)strlen(pidStr)) {
-		sharkLog(SHARK_LOG_ERR, "%s write failed\n", pidPath.data());
-		close(pidFd);
-		return -1;
-	}
+	std::ofstream shark_pid;
+	shark_pid.open(pidPath);
+	shark_pid.write(pidStr, strlen(pidStr));
+	shark_pid.close();
 
 	sharkLog(SHARK_LOG_ERR, "%s update successfully, pid:%s\n", pidPath.data(), pidStr);
-	close(pidFd);
 	return 0;
 }
 

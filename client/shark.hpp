@@ -23,7 +23,7 @@ class Shark {
 	~Shark();
 
  private:
-	int retProcess(int type, const char *ret);
+	int retProcess(COMMAND_TYPE type, const char *ret);
 
 	int timeOutProcess();
 	CliClient *cliClient = NULL;
