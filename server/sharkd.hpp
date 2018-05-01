@@ -18,19 +18,19 @@
 #include "utils/threadQueue.hpp"
 
 namespace shark {
-	class Sharkd {
-	public:
-		Sharkd();
-		~Sharkd();
+class Sharkd {
+ public:
+	Sharkd();
+	~Sharkd();
 
-		int run();
-	private:
-		GlobalConfig *gConfig = NULL;
-		SharkConfig sCfg;
-		ContainerPool *containerPool = NULL;
-		CliServer *cliServer = NULL;
-		GlobalNetwork *gNetwork = NULL;
-	};
-}
+	int run();
+ private:
+	GlobalConfig *gConfig = NULL;
+	SharkConfig sCfg;
+	ContainerPool *containerPool = NULL;
+	CliServer *cliServer = NULL;
+	GlobalNetwork *gNetwork = NULL;
+};
+}  // namespace shark
 
 #endif /* SHARK_HPP_ */

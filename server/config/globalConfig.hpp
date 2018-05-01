@@ -12,60 +12,60 @@
 #include <arpa/inet.h>
 
 #include <memory>
+#include <string>
 
 namespace shark {
+typedef enum {
+	NETWORK_NONE = 0,
+	NETWORK_BRIDGE,
+} NETWORK_TYPE;
 
-	typedef enum {
-		NETWORK_NONE = 0,
-		NETWORK_BRIDGE,
-	} NETWORK_TYPE;
+union IntegerArrary {
+	unsigned int integer;
+	unsigned char array[4];
+};
+typedef struct {
+	std::string str;
+	union IntegerArrary value;
+	union IntegerArrary bdValue;
+	unsigned int mask;
+}Ipv4Addr;
 
-	union IntegerArrary {
-		unsigned int integer;
-		unsigned char array[4];
-	};
-	typedef struct {
-		std::string str;
-		union IntegerArrary value;
-		union IntegerArrary bdValue;
-		unsigned int mask;
-	}Ipv4Addr;
+typedef struct {
+	std::string name;
+	Ipv4Addr addr;
+} Bridge;
 
-	typedef struct {
-		std::string name;
-		Ipv4Addr addr;
-	} Bridge;
+typedef struct {
+	bool enable;
+	NETWORK_TYPE type;
+	bool	ccFlag;
+	Bridge	bridge;
+} NetworkConfig;
 
-	typedef struct {
-		bool enable;
-		NETWORK_TYPE type;
-		bool	ccFlag;
-		Bridge	bridge;
-	} NetworkConfig;
+typedef struct {
+	NetworkConfig net;
+} SharkConfig;
 
-	typedef struct {
-		NetworkConfig net;
-	} SharkConfig;
+int ipv4AddrPreprocess(Ipv4Addr &addr);
 
-	int ipv4AddrPreprocess(Ipv4Addr &addr);
+class GlobalConfig {
+ public:
+	GlobalConfig();
+	~GlobalConfig();
 
-	class GlobalConfig {
-	public:
-		GlobalConfig();
-		~GlobalConfig();
+	int optionProcess(int argc, char *argv[]);
+	SharkConfig getConfig();
+ private:
+	SharkConfig *gConfig;
+	std::string configFile = "/etc/shark/shark.conf";
 
-		int optionProcess(int argc, char *argv[]);
-		SharkConfig getConfig();
-	private:
-		SharkConfig *gConfig;
-		std::string configFile = "/etc/shark/shark.conf";
+	int configRead();
+	int configLineProcess(char *line);
 
-		int configRead();
-		int configLineProcess(char *line);
-
-		int defaultCfgInit();
-	};
-}
+	int defaultCfgInit();
+};
+}  // namespace shark
 
 
 #endif /* CONFIG_GLOBALCONFIG_HPP_ */

@@ -41,9 +41,9 @@ funcExecCallback(binExecCallback), stackSize(stackSize), cloneFlags(0) {
 	sharkLog(SHARK_LOG_DEBUG, "Process construct successfully, cmd:%s\n", execCmd.data());
 }
 
-shark::Process::Process(int stackSize, int (*execFunc)(void *args), void *objectPtr, int cloneFlags):\
+shark::Process::Process(int stackSize, int (*execFunc)(void *args), \
+						void *objectPtr, int cloneFlags):\
 funcExecCallback(execFunc), stackSize(stackSize), cloneFlags(cloneFlags) {
-
 	stackPtr = malloc(stackSize);
 	memset(stackPtr, 0, stackSize);
 	execFuncArg = objectPtr;
@@ -71,13 +71,13 @@ shark::Process::~Process() {
 int shark::Process::exec() {
 	int ret = 0;
 
-   if(funcExecCallback == NULL) {
+   if (funcExecCallback == NULL) {
 	   sharkLog(SHARK_LOG_ERR, "process exec failed\n");
 	   return -1;
-   }
+    }
 
    ret = clone(funcExecCallback, stackTop(), cloneFlags, execFuncArg);
-	if(ret < 0) {
+   if (ret < 0) {
 		sharkLog(SHARK_LOG_ERR, "child process created failed\n");
 		throw new SharkException("child process created failed");
 	}

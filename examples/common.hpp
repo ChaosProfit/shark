@@ -8,6 +8,6 @@
 #ifndef COMMON_HPP_
 #define COMMON_HPP_
 
-int logOutput(const char *filePath, const char *format ,...);
+int logOutput(const char *filePath, const char *format, ...);
 
 #endif /* COMMON_HPP_ */

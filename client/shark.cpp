@@ -43,7 +43,7 @@ int shark::Shark::retProcess(int type, const char* ret) {
 	nlohmann::json retJson = nlohmann::json::parse(std::string(ret));
 	nlohmann::json dataJson;
 
-	if((retJson["ret"].empty() == 1) || (retJson["ret"].get<int>() < 0)) {
+	if ((retJson["ret"].empty() == 1) || (retJson["ret"].get<int>() < 0)) {
 		fprintf(stdout, "Process failed\n");
 		return -1;
 	}
@@ -59,7 +59,7 @@ int shark::Shark::retProcess(int type, const char* ret) {
 		break;
 
 	case COMMAND_LIST:
-		if(retJson["data"].empty() == 1) {
+		if (retJson["data"].empty() == 1) {
 			std::cout << "List process failed\n";
 			return -1;
 		}
@@ -84,10 +84,10 @@ int shark::Shark::retProcess(int type, const char* ret) {
 int shark::Shark::process(int argc, char *argv[]) {
 	const char *dataToSend = option->process(argc, argv);
 
-	if(dataToSend != NULL) {
+	if (dataToSend != NULL) {
 		sharkLog(SHARK_LOG_DEBUG, "result:%s\n", dataToSend);
 		const char *dataPtr = (const char *)cliClient->dataSend(dataToSend, strlen(dataToSend));
-		if(dataPtr == NULL) {
+		if (dataPtr == NULL) {
 			sharkLog(SHARK_LOG_DEBUG, "data send failed\n");
 			return -1;
 		}

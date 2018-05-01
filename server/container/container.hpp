@@ -28,55 +28,54 @@
 	Container class defines a container.
 */
 namespace shark  {
+class Container {
+ public:
+	Container(ContainerConfig &cCfg, SharkConfig &sCfg, Cgroup &cgrp);
+	~Container();
 
-	class Container {
-	public:
-		Container(ContainerConfig &cCfg, SharkConfig &sCfg, Cgroup &cgrp);
-		~Container();
+	/*pause a container*/
+	int pause();
+	/*resume a container*/
+	int resume();
 
-		/*pause a container*/
-		int pause();
-		/*resume a container*/
-		int resume();
+	/*start a container*/
+	int start();
+	/*stop a container*/
+	int stop();
+	/*send a new command to the container and exec*/
+	int cmdSend(std::string &execCmd);
 
-		/*start a container*/
-		int start();
-		/*stop a container*/
-		int stop();
-		/*send a new command to the container and exec*/
-		int cmdSend(std::string &execCmd);
+	/*get the id of the container*/
+	std::string& getId() {
+		return cCfg.id;
+	}
 
-		/*get the id of the container*/
-		std::string& getId() {
-			return cCfg.id;
-		};
+	/*get the read end of the manageProcessPipe*/
+	int getReadPipe() const {
+		return manageProcessPipe[0];
+	}
+	/*add a process to the container*/
+	int addProcess(Process *p);
 
-		/*get the read end of the manageProcessPipe*/
-		int getReadPipe() const {
-			return manageProcessPipe[0];
-		}
-		/*add a process to the container*/
-		int addProcess(Process *p);
+ private:
+	int idInit();
+	int dftCfgInit();
+	int initManageProcess();
+	Process *manageProcess = NULL;
+	int manageProcessPipe[2] =  {0};
 
-	private:
-		int idInit();
-		int dftCfgInit();
-		int initManageProcess();
-		Process *manageProcess = NULL;
-		int manageProcessPipe[2] =  {0};
+	std::string id;
+	std::string nameSpace;
+	ContainerConfig cCfg;
+	SharkConfig &sCfg;
+	std::list<Process *> processList;
 
-		std::string id;
-		std::string nameSpace;
-		ContainerConfig cCfg;
-		SharkConfig &sCfg;
-		std::list<Process *> processList;
+	ContainerNetwork *cNetwork;
 
-		ContainerNetwork *cNetwork;
+	Cgroup &cgroup;
 
-		Cgroup &cgroup;
-
-		const static int SHORT_ID_LENGTH = 32;
-	};
-}
+	const static int SHORT_ID_LENGTH = 32;
+};
+}  // namespace shark
 
 #endif /* CONTAINER_CONTAINER_HPP_ */

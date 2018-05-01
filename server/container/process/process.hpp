@@ -8,55 +8,55 @@
 #ifndef LIBCONTAINER_CONTAINER_PROCESS_HPP_
 #define LIBCONTAINER_CONTAINER_PROCESS_HPP_
 
+#include <unistd.h>
+
 #include <string>
 #include <list>
-
-#include <unistd.h>
 
 #define DEFAULT_STACK_SIZE  (1024*1024)
 
 namespace shark  {
-	typedef enum  {
-		EXEC_BIN = 0,
-		EXEC_FUNC = 1,
-	} EXEC_TYPE;
+typedef enum  {
+	EXEC_BIN = 0,
+	EXEC_FUNC = 1,
+} EXEC_TYPE;
 
-	int execFunc(void *args);
+int execFunc(void *args);
 
-	class Process {
-	public:
-		Process(int stackSize, const char *execCmd);
-		Process(int stackSize, int (*execFunc)(void *args), void *argv, int cloneFlags);
-		~Process();
+class Process {
+ public:
+	Process(int stackSize, const char *execCmd);
+	Process(int stackSize, int (*execFunc)(void *args), void *argv, int cloneFlags);
+	~Process();
 
-		int exec();
+	int exec();
 
-		void *stackTop() {
-			return (void *)((char *)stackPtr + stackSize);
-		};
+	void *stackTop() {
+		return (void *)((char *)stackPtr + stackSize);
+	}
 
-		int getPid() {
-			return this->pid;
-		};
+	int getPid() {
+		return this->pid;
+	}
 
-		std::string &getExecCmd() {
-			return execCmd;
-		}
+	std::string &getExecCmd() {
+		return execCmd;
+	}
 
-	private:
-		std::string execCmd;
+ private:
+	std::string execCmd;
 
-		int execFunction();
-		int (*funcExecCallback)(void *args) = NULL;
+	int execFunction();
+	int (*funcExecCallback)(void *args) = NULL;
 
-		int stackSize;
-		int cloneFlags;
-		void *stackPtr;
-		int pid = 0;
-		void *execFuncArg = NULL;
-		std::list<Process *> childProcessList;
-	};
-}
+	int stackSize;
+	int cloneFlags;
+	void *stackPtr;
+	int pid = 0;
+	void *execFuncArg = NULL;
+	std::list<Process *> childProcessList;
+};
+}  // namespace shark
 
 
 #endif /* LIBCONTAINER_CONTAINER_PROCESS_HPP_ */

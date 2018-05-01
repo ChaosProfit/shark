@@ -10,7 +10,7 @@ int main(int argc, char *argv[]){
 	char tmpBuf[64] = {0};
 
 	int ret = gethostname(tmpBuf, 64);
-	if(ret < 0){
+	if (ret < 0){
 		return -1;
 	}
 

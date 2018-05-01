@@ -35,13 +35,13 @@ int sharkdPidUpdate() {
 	pidPath.append("sharkd.pid");
 
 	pidFd = open(pidPath.data(), O_CREAT|O_RDWR);
-	if(pidFd < 0) {
+	if (pidFd < 0) {
 		sharkLog(SHARK_LOG_ERR, "%s open failed\n", pidPath.data());
 		return -1;
 	}
 
 	ret = write(pidFd, pidStr, strlen(pidStr));
-	if(ret != (signed int)strlen(pidStr)) {
+	if (ret != (signed int)strlen(pidStr)) {
 		sharkLog(SHARK_LOG_ERR, "%s write failed\n", pidPath.data());
 		close(pidFd);
 		return -1;
@@ -52,41 +52,39 @@ int sharkdPidUpdate() {
 	return 0;
 }
 
-int rmDir(const char *dirPath)
- {
+int rmDir(const char *dirPath) {
 	int ret = 0;
 	DIR* dirp = opendir(dirPath);
-	if(!dirp) {
+	if (!dirp) {
 		return -1;
 	}
 
 	struct dirent *dir;
 	struct stat st;
 	while((dir = readdir(dirp)) != NULL) {
-		if((strcmp(dir->d_name,".") == 0) || (strcmp(dir->d_name,"..") == 0)) {
+		if ((strcmp(dir->d_name, ".") == 0) || (strcmp(dir->d_name, "..") == 0)) {
 			continue;
 		}
 
 		std::string sub_path = std::string(dirPath) + '/' + dir->d_name;
-		if(lstat(sub_path.c_str(),&st) == -1) {
+		if (lstat(sub_path.c_str(), &st) == -1) {
 			continue;
 		}
 
-		if(S_ISDIR(st.st_mode)) {
+		if (S_ISDIR(st.st_mode)) {
 			// 如果是目录文件，递归删除
-			if(rmDir(sub_path.data()) == -1) {
+			if (rmDir(sub_path.data()) == -1) {
 				closedir(dirp);
 				return -1;
 			}
 
 			rmdir(sub_path.c_str());
-		}
-		else {
+		} else {
 			ret = unlink(sub_path.c_str());     // 如果是普通文件，则unlink
 		}
 	}
 
-	if(rmdir(dirPath) == -1) {
+	if (rmdir(dirPath) == -1) {
 		closedir(dirp);
 		return -1;
 	}
@@ -95,18 +93,17 @@ int rmDir(const char *dirPath)
 	return ret;
 }
 
-int cmdExecSync(const char *format ,...)
- {
+int cmdExecSync(const char *format, ...) {
 	char argBuf[1024] =  {0};
 	char retBuf[256] =  {0};
 
 	va_list argLst;
-	va_start(argLst,format);
+	va_start(argLst, format);
 	vsnprintf(argBuf, 1024, format, argLst);
 	va_end(argLst);
 
 	FILE *p_file = popen(argBuf, "r");
-	if(p_file == NULL) {
+	if (p_file == NULL) {
 		sharkLog(SHARK_LOG_ERR, "%s exec failed\n", argBuf);
 		return -1;
 	}
@@ -124,13 +121,12 @@ int dirInit() {
 	DIR *pd_var_dir = NULL;
 
 	pd_var_dir = opendir(SharkdParentDir);
-	if(pd_var_dir == NULL) {
-		if(mkdir(SharkdParentDir, 0777) < 0) {
+	if (pd_var_dir == NULL) {
+		if (mkdir(SharkdParentDir, 0777) < 0) {
 			sharkLog(SHARK_LOG_ERR, "mkdir %s error\n", SharkdParentDir);
 			return -1;
 		}
-	}
-	else {
+	} else {
 		closedir(pd_var_dir);
 	}
 	return 0;

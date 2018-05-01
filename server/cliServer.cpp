@@ -26,7 +26,7 @@ cPool(cPool) {
 
 	unlink(SHARK_INTERFACE_PATH);
 	interfaceFd = socket(AF_UNIX, SOCK_STREAM, 0);
-	if(interfaceFd < 0) {
+	if (interfaceFd < 0) {
 		sharkLog(SHARK_LOG_ERR, "interfaceFd socker failed\n");
 		throw SharkException("interfaceFd socket failed");
 	}
@@ -37,19 +37,19 @@ cPool(cPool) {
 	addr.sun_family = AF_UNIX;
 	strncpy(addr.sun_path, SHARK_INTERFACE_PATH, sizeof(addr.sun_path) - 1);
 	ret = bind(interfaceFd, (struct sockaddr *)&addr, sizeof(addr));
-	if(ret < 0) {
+	if (ret < 0) {
 		sharkLog(SHARK_LOG_ERR, "interface bind failed\n");
 		throw new SharkException("interfaceFd bind failed");
 	}
 
 	ret = listen(interfaceFd, 5);
-	if(ret < 0) {
+	if (ret < 0) {
 		sharkLog(SHARK_LOG_ERR, "interfaceFd listen failed\n");
 		throw new SharkException("interfaceFd listen failed");
 	}
 
 	rcvBuf = malloc(RCV_BUF_SIZE);
-	if(rcvBuf == NULL) {
+	if (rcvBuf == NULL) {
 		sharkLog(SHARK_LOG_ERR, "rcv buf malloc failed\n");
 		throw new SharkException("rcvBuf malloc failed");
 	}
@@ -66,7 +66,7 @@ shark::CliServer::~CliServer() {
 		free(rcvBuf);
 	}
 
-	if(interfaceFd != 0) {
+	if (interfaceFd != 0) {
 		close(interfaceFd);
 	}
 
@@ -102,13 +102,13 @@ int shark::CliServer::cliRecv() {
 	while(1) {
 		bzero(&clientAddr, sizeof(clientAddr));
 		ret = sepoll.wait(interfaceFd, -1);
-		if(ret == -1) {
+		if (ret == -1) {
 			sharkLog(SHARK_LOG_DEBUG, "epoll wait failed\n");
 			return -1;
 		}
 
 		int recvFd = accept(interfaceFd, (struct sockaddr *)&clientAddr, &clientAddrLen);
-		if(recvFd < 0) {
+		if (recvFd < 0) {
 
 			sharkLog(SHARK_LOG_ERR, "accept failed\n");
 			throw new SharkException("accept failed");
@@ -116,7 +116,7 @@ int shark::CliServer::cliRecv() {
 
 		memset(rcvBuf, 0, RCV_BUF_SIZE);
 		rcvLen = recv(recvFd, rcvBuf, RCV_BUF_SIZE, MSG_CMSG_CLOEXEC);
-		if(rcvLen < 0) {
+		if (rcvLen < 0) {
 			throw new SharkException("received failed");
 		}
 
@@ -134,7 +134,7 @@ int shark::CliServer::retSend(const void *data, int dataSize) {
 	int ret = 0;
 
 	ret = send(interfaceFd, data, dataSize, MSG_NOSIGNAL);
-	if(ret != (signed int)dataSize) {
+	if (ret != (signed int)dataSize) {
 		sharkLog(SHARK_LOG_ERR, "cmd send failed\n");
 		throw new SharkException("Json Command send failed");
 	}
@@ -157,7 +157,7 @@ int shark::CliServer::threadInit() {
 	pthread_attr_t threadAttr =  {0};
 
 	ret = pthread_create(&receiveThread, &threadAttr, threadFunc, this);
-	if(ret < 0) {
+	if (ret < 0) {
 		sharkLog(SHARK_LOG_ERR, "CliServer threadInit failed\n");
 		throw new SharkException("rcvThread create failed");
 	}

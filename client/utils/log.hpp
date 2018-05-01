@@ -14,8 +14,8 @@
 #define SHARK_LOG_INFO	2
 #define SHARK_LOG_DEBUG	3
 
-void sharkPrint(int debugMode, char *file, int line, const char *format ,...);
-#define sharkLog(mode,...) sharkPrint(mode, __FILE__, __LINE__,__VA_ARGS__)
+void sharkPrint(int debugMode, char *file, int line, const char *format, ...);
+#define sharkLog(mode, ...) sharkPrint(mode, __FILE__, __LINE__, __VA_ARGS__)
 
 int sharkLogInit(char *log_file_path);
 

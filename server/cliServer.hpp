@@ -21,44 +21,43 @@
 #include "utils/command.hpp"
 
 namespace shark {
+typedef enum {
+	INTERFACE_NONE = 0,
+	INTERFACE_SYNC,
+	INTERFACE_ASYNC
+}INTERFACE_TYPE;
 
-	typedef enum {
-		INTERFACE_NONE = 0,
-		INTERFACE_SYNC,
-		INTERFACE_ASYNC
-	}INTERFACE_TYPE;
+class CliServer {
+ public:
+	explicit CliServer(ContainerPool &cPool);
+	~CliServer();
 
-	class CliServer {
-	public:
-		CliServer(ContainerPool &cPool);
-		~CliServer();
+	int cliRecv();
+	int retSend(const void *data, int size);
+	void *getDataPtr() {
+		return rcvBuf;
+	}
 
-		int cliRecv();
-		int retSend(const void *data, int size);
-		void *getDataPtr() {
-			return rcvBuf;
-		};
+ private:
+	std::string cliProcess(char *buf);
+	int initCommon();
+	int process(char *buf);
+	static void *threadFunc(void *);
+	int threadInit();
 
-	private:
-		std::string cliProcess(char *buf);
-		int initCommon();
-		int process(char *buf);
-		static void *threadFunc(void *);
-		int threadInit();
+	pthread_t receiveThread = 0;
 
-		pthread_t receiveThread = 0;
+	INTERFACE_TYPE syncType = INTERFACE_NONE;
 
-		INTERFACE_TYPE syncType = INTERFACE_NONE;
-
-		ContainerPool &cPool;
-		int timeout = 0;
-		Sepoll sepoll = Sepoll();
-		int interfaceFd = 0;
-		const char* SHARK_INTERFACE_PATH = "/run/shark/cli";
-		int RCV_BUF_SIZE = 1024;
-		void *rcvBuf = NULL;
-		struct sockaddr_un addr;
-	};
-}
+	ContainerPool &cPool;
+	int timeout = 0;
+	Sepoll sepoll = Sepoll();
+	int interfaceFd = 0;
+	const char* SHARK_INTERFACE_PATH = "/run/shark/cli";
+	int RCV_BUF_SIZE = 1024;
+	void *rcvBuf = NULL;
+	struct sockaddr_un addr;
+};
+}  // namespace shark
 
 #endif /* SHARKD_INTERFACE_HPP_ */

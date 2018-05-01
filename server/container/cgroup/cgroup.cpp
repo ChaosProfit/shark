@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <string.h>
-#include <stdio.h>
 
 #include <string>
 #include <vector>
@@ -31,18 +30,18 @@ int shark::Cgroup::setStrValue(const char *path, const char *value, bool append)
 	int ret = 0;
 	int flags = O_WRONLY;
 
-	if(append == true) {
+	if (append == true) {
 		flags |= O_APPEND;
 	}
 
 	int fd = open(path, flags);
-	if(fd < 0) {
+	if (fd < 0) {
 		sharkLog(SHARK_LOG_ERR, "open %s failed\n", path);
 		return -1;
 	}
 
 	ret = write(fd, value, strlen(value));
-	if(ret < 0) {
+	if (ret < 0) {
 		close(fd);
 		sharkLog(SHARK_LOG_ERR, "write %s to %s failed\n", value, path);
 		return -1;
@@ -95,7 +94,7 @@ int shark::Cgroup::addTask(std::string id, int pid) {
 		tasksPath = cgroupPath + *item + "/" + id + "/" + "tasks";
 
 		ret = setStrValue(tasksPath.data(), pidBuf, true);
-		if(ret < 0) {
+		if (ret < 0) {
 			sharkLog(SHARK_LOG_DEBUG, "update %s to %s failed\n", pidBuf, tasksPath.data());
 		}
 	}
@@ -111,7 +110,7 @@ int shark::Cgroup::addLeaf(std::string &id) {
 	for(auto item = subModules.begin(); item != subModules.end(); item++) {
 		dirPath = cgroupPath + *item + "/" + id;
 		ret = mkdir(dirPath.data(), 0777);
-		if(ret < 0) {
+		if (ret < 0) {
 			sharkLog(SHARK_LOG_ERR, "makedir %s failed, errno:%d\n", dirPath.data(), errno);
 		}
 	}
@@ -127,7 +126,7 @@ int shark::Cgroup::delLeaf(std::string id) {
 	for(auto item = subModules.begin(); item != subModules.end(); item++) {
 		dirPath = cgroupPath + *item + "/" + id;
 		ret = rmdir(dirPath.data());
-		if(ret < 0) {
+		if (ret < 0) {
 			sharkLog(SHARK_LOG_ERR, "makedir %s failed, errno:%d\n", dirPath.data(), errno);
 		}
 	}
@@ -144,14 +143,14 @@ shark::Cgroup::Cgroup() {
 		dirPath = cgroupPath + *item;
 		dirPath.append("/shark");
 		ret = mkdir(dirPath.data(), 0777);
-		if(ret < 0) {
+		if (ret < 0) {
 			sharkLog(SHARK_LOG_ERR, "makedir %s failed, errno:%d\n", dirPath.data(), errno);
 		}
 	}
 
 	sharkLog(SHARK_LOG_DEBUG, "Cgroup construct successfully\n");
 	return;
-};
+}
 
 shark::Cgroup::~Cgroup() {
 	int ret = 0;
@@ -160,11 +159,11 @@ shark::Cgroup::~Cgroup() {
 		dirPath = cgroupPath + *item;
 		dirPath.append("/shark");
 		ret = rmdir(dirPath.data());
-		if(ret < 0) {
+		if (ret < 0) {
 			sharkLog(SHARK_LOG_ERR, "makedir %s failed, errno:%d\n", dirPath.data(), errno);
 		}
 	}
 
 	sharkLog(SHARK_LOG_DEBUG, "Cgroup destruct successfully\n");
 	return;
-};
+}

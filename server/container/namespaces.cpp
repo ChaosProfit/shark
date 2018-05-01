@@ -19,7 +19,7 @@
 
 static int fileUpdate(char *filePath, char *value) {
 	int idFd = open(filePath, O_RDWR);
-	if(idFd < 0) {
+	if (idFd < 0) {
 		sharkLog(SHARK_LOG_DEBUG, "%s open failed\n", filePath);
 		return -1;
 	}
@@ -27,7 +27,7 @@ static int fileUpdate(char *filePath, char *value) {
 	snprintf(value, 128, "0 %d 1", getuid());
 
 	int ret = write(idFd, value, strlen(value));
-	if((unsigned)ret != strlen(value)) {
+	if ((unsigned)ret != strlen(value)) {
 		sharkLog(SHARK_LOG_DEBUG, "%s write failed\n", filePath);
 		return -1;
 	}
@@ -59,19 +59,19 @@ int utsNsInit(const char *hostname) {
 	char tmpBuf[64] =  {0};
 	int ret = 0;
 
-	if(strlen(hostname) > 64) {
+	if (strlen(hostname) > 64) {
 		sharkLog(SHARK_LOG_DEBUG, "lenth %d of %s is too long, limit is 64bytes\n", strlen(hostname), hostname);
 		return -1;
 	}
 
 	ret = sethostname(hostname, 64);
-	if(ret < 0) {
+	if (ret < 0) {
 		sharkLog(SHARK_LOG_DEBUG, "sethostname %s failed, errno:%d\n", hostname, errno);
 		return -1;
 	}
 
 	ret = gethostname(tmpBuf, 64);
-	if(ret < 0) {
+	if (ret < 0) {
 		sharkLog(SHARK_LOG_DEBUG, "gethostname %s failed, errno:%d\n", hostname, errno);
 		return -1;
 	}

@@ -21,19 +21,18 @@ const static int SHARK_LOG_MODE = SHARK_LOG_DEBUG;
 const static int LOG_BUF_SIZE = 2048;
 static char LOG_FILE_PATH[128] =  {0};
 
-void sharkPrint(int debugMode, char *file, int line, const char *format ,...)
- {
+void sharkPrint(int debugMode, char *file, int line, const char *format, ...) {
 	static char outBuf[LOG_BUF_SIZE] =  {0};
 	static char logLevel[12] =  {0};
 
-	if(debugMode > SHARK_LOG_MODE) {
+	if (debugMode > SHARK_LOG_MODE) {
 		return;
 	}
 
 	time_t rawTime = 0;
 	time(&rawTime);
 	char *timeStr = ctime(&rawTime);
-	timeStr[strlen(timeStr)-1]=0;
+	timeStr[strlen(timeStr)-1] = 0;
 
 	switch(debugMode) {
 	case SHARK_LOG_ERR:
@@ -55,7 +54,7 @@ void sharkPrint(int debugMode, char *file, int line, const char *format ,...)
 	write(fd, outBuf, strlen(outBuf));
 
 	va_list argLst;
-	va_start(argLst,format);
+	va_start(argLst, format);
 	vsnprintf(outBuf, LOG_BUF_SIZE, format, argLst);
 	write(fd, outBuf, strlen(outBuf));
 	va_end(argLst);
@@ -64,8 +63,7 @@ void sharkPrint(int debugMode, char *file, int line, const char *format ,...)
 	return;
 }
 
-void sharkPrint(int debugMode, char *file, int line, std::string &data)
- {
+void sharkPrint(int debugMode, char *file, int line, std::string &data) {
 	sharkPrint(debugMode, file, line, data.data());
 }
 

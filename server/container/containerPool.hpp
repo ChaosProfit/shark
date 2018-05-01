@@ -9,10 +9,10 @@
 #define CONTAINER_CONTAINERPOOL_HPP_
 
 #include <pthread.h>
-
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 #include <string>
 #include <memory>
 #include <list>
@@ -25,30 +25,30 @@
 #include "cgroup/cgroup.hpp"
 
 namespace shark  {
-	class ContainerPool {
-	public:
-		std::string cmdProcess(Command *cmd);
+class ContainerPool {
+ public:
+	std::string cmdProcess(Command *cmd);
 
-		ContainerPool(SharkConfig &cfg);
-		~ContainerPool();
-	private:
-		std::string listCmdProcess();
+	explicit ContainerPool(SharkConfig &cfg);
+	~ContainerPool();
+ private:
+	std::string listCmdProcess();
 
-		std::string retToJson(int ret);
-		std::string retToJson(std::string data);
-		static void *cmdProcessFunc(void *pool);
-		int execContainer(struct Command &cmd);
-		int createContainer(struct Command &cfg);
-		int delContainer(struct Command &cfg);
-		std::list<Container *>& listContainer();
-		Container *getContainer(std::string &id);
+	std::string retToJson(int ret);
+	std::string retToJson(std::string data);
+	static void *cmdProcessFunc(void *pool);
+	int execContainer(struct Command &cmd);
+	int createContainer(struct Command &cfg);
+	int delContainer(struct Command &cfg);
+	std::list<Container *>& listContainer();
+	Container *getContainer(std::string &id);
 
-	private:
-		std::list<Container *> clist;
-		pthread_t containerThread = 0;
-		SharkConfig &sCfg;
-		std::shared_ptr<Cgroup> cgroup = NULL;
-	};
-}
+ private:
+	std::list<Container *> clist;
+	pthread_t containerThread = 0;
+	SharkConfig &sCfg;
+	std::shared_ptr<Cgroup> cgroup = NULL;
+};
+}  // namespace shark
 
 #endif /* CONTAINER_CONTAINERPOOL_HPP_ */

@@ -10,7 +10,7 @@
 
 int sharkdPidUpdate();
 int rmDir(const char *dirPath);
-int cmdExecSync(const char *format ,...);
+int cmdExecSync(const char *format, ...);
 int dirInit();
 
 #endif /* UTILS_MISC_HPP_ */

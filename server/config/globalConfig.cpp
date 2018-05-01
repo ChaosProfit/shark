@@ -36,7 +36,7 @@ shark::GlobalConfig::~GlobalConfig() {
 }
 
 int shark::GlobalConfig::defaultCfgInit() {
-	if(gConfig->net.bridge.name.size() == 0) {
+	if (gConfig->net.bridge.name.size() == 0) {
 		gConfig->net.bridge.name = "shark0";
 	}
 
@@ -74,12 +74,12 @@ int shark::GlobalConfig::configLineProcess(char *line) {
 
 	std::string input(line);
 	bool found = regex_match(input, match, reg);
-	if(found == false) {
+	if (found == false) {
 		sharkLog(SHARK_LOG_ERR, "Failed to recognize %s\n", line);
 		return -1;
 	}
 
-	if(match.size() != 5) {
+	if (match.size() != 5) {
 		sharkLog(SHARK_LOG_ERR, "Failed to recognize %s, size:%d\n", line, match.size());
 		return -1;
 	}
@@ -87,25 +87,21 @@ int shark::GlobalConfig::configLineProcess(char *line) {
 	std::string key = match[1].str();
 	std::string value = match[3].str();
 
-	if(key.compare("network-enable") == 0) {
-		if(value.compare("True") == 0) {
+	if (key.compare("network-enable") == 0) {
+		if (value.compare("True") == 0) {
 			gConfig->net.enable = true;
-		}
-		else {
+		} else {
 			gConfig->net.enable = false;
 		}
-	}
-	else if(key.compare("network-type") == 0) {
-		if(value.compare("bridge") == 0) {
+	} else if (key.compare("network-type") == 0) {
+		if (value.compare("bridge") == 0) {
 			gConfig->net.type = NETWORK_BRIDGE;
 		}
-	}
-	else if(key.compare("container-communicate") == 0) {
-		if(value.compare("True") == 0) {
+	} else if (key.compare("container-communicate") == 0) {
+		if (value.compare("True") == 0) {
 			gConfig->net.ccFlag = true;
 		}
-	}
-	else if(key.compare("bridge-ip") == 0) {
+	} else if (key.compare("bridge-ip") == 0) {
 		gConfig->net.bridge.addr.str = value;
 		ipv4AddrPreprocess(gConfig->net.bridge.addr);
 	}
@@ -118,13 +114,13 @@ int shark::GlobalConfig::configRead() {
 
 	FILE *fPtr = fopen(configFile.data(), "r");
 
-	if(fPtr == NULL) {
+	if (fPtr == NULL) {
 		sharkLog(SHARK_LOG_ERR, "open %s failed\n", configFile.data());
 		return -1;
 	}
 
 	while(fgets(readBuf, 256, fPtr) != NULL) {
-		if((readBuf[0] == '#') || (readBuf[0] == ' ')) {
+		if ((readBuf[0] == '#') || (readBuf[0] == ' ')) {
 			continue;
 		}
 
@@ -144,18 +140,18 @@ int shark::ipv4AddrPreprocess(Ipv4Addr &addr) {
 										(unsigned int*)&addr.value.array[2], (unsigned int*)&addr.value.array[3],
 										&addr.mask);
 
-	if(ret == EOF) {
+	if (ret == EOF) {
 		sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, ipStr:%s\n", addr.str.data());
 		return -1;
 	}
 
-	if(addr.mask > 32) {
+	if (addr.mask > 32) {
 		sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, mask:%d\n", addr.mask);
 		return -1;
 	}
 
 	for(int index = 0; index < 4; index++) {
-		if(addr.value.array[index] > 255) {
+		if (addr.value.array[index] > 255) {
 			sharkLog(SHARK_LOG_ERR, "brIpv4Process failed, ipStr:%s\n", addr.str.data());
 			return -1;
 		}

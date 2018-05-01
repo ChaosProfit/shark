@@ -156,8 +156,8 @@ using json = basic_json<>;
     #define JSON_CATCH(exception) catch(exception)
 #else
     #define JSON_THROW(exception) std::abort()
-    #define JSON_TRY if(true)
-    #define JSON_CATCH(exception) if(false)
+    #define JSON_TRY if (true)
+    #define JSON_CATCH(exception) if (false)
 #endif
 
 // override exception macros

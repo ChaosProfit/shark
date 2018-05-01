@@ -16,37 +16,35 @@
 #include <memory>
 
 namespace shark {
+typedef enum {
+	INTERFACE_NONE = 0,
+	INTERFACE_SYNC,
+	INTERFACE_ASYNC
+}INTERFACE_TYPE;
 
-	typedef enum {
-		INTERFACE_NONE = 0,
-		INTERFACE_SYNC,
-		INTERFACE_ASYNC
-	}INTERFACE_TYPE;
+class CliClient {
+ public:
+	CliClient();
+	~CliClient();
 
-	class CliClient {
-	public:
-		CliClient();
-		~CliClient();
+	void* dataSend(const void *data, int size);
 
-		void* dataSend(const void *data, int size);
+ private:
+	int process(char *buf);
 
-	private:
+	pthread_t receiveThread = 0;
 
-		int process(char *buf);
+	INTERFACE_TYPE syncType = INTERFACE_NONE;
 
-		pthread_t receiveThread = 0;
+	int timeout = 0;
+	const char* SHARK_INTERFACE_PATH = "/run/shark/cli";
+	int RCV_BUF_SIZE = 1024;
+	void *rcvBuf = NULL;
+	struct sockaddr_un addr;
 
-		INTERFACE_TYPE syncType = INTERFACE_NONE;
-
-		int timeout = 0;
-		const char* SHARK_INTERFACE_PATH = "/run/shark/cli";
-		int RCV_BUF_SIZE = 1024;
-		void *rcvBuf = NULL;
-		struct sockaddr_un addr;
-
-		int (*dataProcess)(void *object, void *data) = NULL;
-		void *releObject = NULL;
-	};
-}
+	int (*dataProcess)(void *object, void *data) = NULL;
+	void *releObject = NULL;
+};
+}  // namespace shark
 
 #endif /* SHARKD_INTERFACE_HPP_ */

@@ -32,7 +32,6 @@ int logFile(const char *data) {
 }
 
 void signalProcessFunc(int sig) {
-
 	switch(sig) {
 		case SIGPIPE:
 			sharkLog(SHARK_LOG_DEBUG, "catch a SIGPIPE signal\n");
@@ -66,27 +65,27 @@ int initSignalProcess() {
 	st_act.sa_flags = 0;
 	st_act.sa_handler = signalProcessFunc;
 
-	if(sigemptyset(&st_act.sa_mask) != 0) {
+	if (sigemptyset(&st_act.sa_mask) != 0) {
 		sharkLog(SHARK_LOG_ERR, "sigemptyset error\n");
 		return -1;
 	}
 
-	if(sigaction(SIGPIPE, &st_act, NULL) != 0) {
+	if (sigaction(SIGPIPE, &st_act, NULL) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGPIPE sigaction error\n");
 		return -1;
 	}
 
-	if(sigaction(SIGCHLD, &st_act, NULL) != 0) {
+	if (sigaction(SIGCHLD, &st_act, NULL) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGCHLD sigaction error\n");
 		return -1;
 	}
 
-	if(sigaction(SIGINT, &st_act, NULL) != 0) {
+	if (sigaction(SIGINT, &st_act, NULL) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGINT sigaction error\n");
 		return -1;
 	}
 
-	if(sigaction(SIGTERM, &st_act, NULL) != 0) {
+	if (sigaction(SIGTERM, &st_act, NULL) != 0) {
 		sharkLog(SHARK_LOG_ERR, "SIGTERM sigaction error\n");
 		return -1;
 	}
@@ -102,7 +101,7 @@ int manageProcessFunc(void *args) {
 	char buf[PIPE_BUF] =  {0};
 
 	ret = read(readPipe, buf, PIPE_BUF);
-	if((unsigned int)ret != container->getId().size()) {
+	if ((unsigned int)ret != container->getId().size()) {
 		sharkLog(SHARK_LOG_DEBUG, "managerProcessFunc create failed, ret:%d, rcv:%s\n", ret , buf);
 		return -1;
 	}
@@ -114,7 +113,6 @@ int manageProcessFunc(void *args) {
 	sharkLog(SHARK_LOG_DEBUG, "manage process,uid:%d,gid:%d, pid:%d\n", getuid(), getgid(), getpid());
 
 	while(1) {
-
 		memset(buf, 0, PIPE_BUF);
 		ret = read(readPipe, buf, PIPE_BUF);
 
@@ -133,7 +131,6 @@ int manageProcessFunc(void *args) {
 }
 
 int shark::Container::idInit() {
-
 	id = cCfg.id;
 
 	sharkLog(SHARK_LOG_DEBUG, "Id init finished, ID:%s\n", id.data());
@@ -141,8 +138,7 @@ int shark::Container::idInit() {
 }
 
 int shark::Container::dftCfgInit() {
-
-	if(cCfg.net.addr.str.size() == 0) {
+	if (cCfg.net.addr.str.size() == 0) {
 		char tmp[32] =  {0};
 		snprintf(tmp, 32, "%u.%u.%u.%u/%u", sCfg.net.bridge.addr.value.array[0],
 												 sCfg.net.bridge.addr.value.array[1],
@@ -165,12 +161,14 @@ cCfg(cCfgArg), sCfg(sCfgArg), cgroup(cgrp) {
 	ret = idInit();
 
 	ret = pipe(manageProcessPipe);
-	if(ret < 0) {
+	if (ret < 0) {
 		sharkLog(SHARK_LOG_DEBUG, "Container construct failed\n");
 	}
 
 	cNetwork = new ContainerNetwork(cCfg.id, sCfg.net, cCfg.net);
-	sharkLog(SHARK_LOG_DEBUG, "Container construct successfully, readPipe:%d, writePipe:%d\n", manageProcessPipe[0], manageProcessPipe[1]);
+	sharkLog(SHARK_LOG_DEBUG, \
+			"Container construct successfully, readPipe:%d, writePipe:%d\n", \
+			manageProcessPipe[0], manageProcessPipe[1]);
 	return;
 }
 
@@ -187,14 +185,15 @@ int shark::Container::start() {
 	int ret = 0;
 	int cloneFlag = CLONE_NEWPID | CLONE_NEWUSER | CLONE_NEWUTS | CLONE_NEWNS | CLONE_NEWIPC;
 
-	manageProcess = new Process(DEFAULT_STACK_SIZE, manageProcessFunc, (void *)this, cloneFlag);
+	manageProcess = new Process(DEFAULT_STACK_SIZE, manageProcessFunc, \
+								static_cast<void *>(this), cloneFlag);
 	manageProcess->exec();
 
 	userNsInit(manageProcess->getPid());
 	ret = write(manageProcessPipe[1], id.data(), id.size());
 
-	sharkLog(SHARK_LOG_DEBUG, "Container %s start successfully, ret:%d\n",\
-			 id.data() ,ret);
+	sharkLog(SHARK_LOG_DEBUG, "Container %s start successfully, ret:%d\n", \
+			 id.data(), ret);
 	return ret;
 }
 
@@ -202,7 +201,7 @@ int shark::Container::cmdSend(std::string &execCmd) {
 	unsigned int ret = 0;
 
 	ret = write(manageProcessPipe[1], execCmd.data(), execCmd.size());
-	if(ret != execCmd.size()) {
+	if (ret != execCmd.size()) {
 		return -1;
 	}
 
@@ -214,7 +213,8 @@ int shark::Container::addProcess(Process *p) {
 	processList.push_back(p);
 
 	cgroup.addTask(id, p->getPid());
-	sharkLog(SHARK_LOG_DEBUG, "container %s addProcess %d successfully\n", id.data(), p->getPid());
+	sharkLog(SHARK_LOG_DEBUG, "container %s addProcess %d successfully\n", \
+			id.data(), p->getPid());
 	return 0;
 }
 

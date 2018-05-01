@@ -15,24 +15,23 @@
 
 #include <iostream>
 
-int logOutput(const char *filePath, const char *format ,...)
-{
+int logOutput(const char *filePath, const char *format ,...) {
 	char argBuf[1024] = {0};
 	char retBuf[256] = {0};
 
 	va_list argLst;
-	va_start(argLst,format);
+	va_start(argLst, format);
 	vsnprintf(argBuf, 1024, format, argLst);
 	va_end(argLst);
 
 	int fd = open(filePath, O_CREAT|O_RDWR|O_APPEND);
-	if(fd < 0){
+	if (fd < 0) {
 		std::cout << "Open file Failed\n";
 		return -1;
 	}
 
 	int ret = write(fd, argBuf, strlen(argBuf));
-	if(ret < 0){
+	if (ret < 0) {
 		std::cout << "Write " << filePath << " failed\n";
 		close(fd);
 		return -1;

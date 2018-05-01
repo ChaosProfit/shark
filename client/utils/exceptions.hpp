@@ -11,17 +11,18 @@
 #include <string>
 #include <exception>
 
+namespace shark {
 class SharkException : public std::exception {
-public:
-	SharkException(std::string input) : msg(input) {
-	};
+ public:
+	explicit SharkException(std::string input) : msg(input) {
+	}
 
-	SharkException(const char *input) : msg(input) {
-	};
+	explicit SharkException(const char *input) : msg(input) {
+	}
 
 	const char* what() {return msg.data();}
-private:
+ private:
 	std::string msg;
 };
-
+}  // namespace shark
 #endif /* UTILS_EXCEPTIONS_HPP_ */

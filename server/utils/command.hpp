@@ -17,20 +17,20 @@
 #include "config/containerConfig.hpp"
 
 namespace shark {
-	typedef enum  {
-		COMMAND_BLANK = 0,
-		COMMAND_CREATE,
-		COMMAND_DELETE,
-		COMMAND_EXEC,
-		COMMAND_LIST,
-		COMMAND_MAX
-	} COMMAND_TYPE;
+typedef enum  {
+	COMMAND_BLANK = 0,
+	COMMAND_CREATE,
+	COMMAND_DELETE,
+	COMMAND_EXEC,
+	COMMAND_LIST,
+	COMMAND_MAX
+} COMMAND_TYPE;
 
-	struct Command {
-		COMMAND_TYPE type;
-		ContainerConfig cfg;
-	};
+struct Command {
+	COMMAND_TYPE type;
+	ContainerConfig cfg;
+};
 
-}
+}  // namespace shark
 
 #endif /* LIBCONTAINER_COMMAND_COMMAND_HPP_ */

@@ -8,16 +8,14 @@
 #ifndef NETNAMESPACE_HPP_
 #define NETNAMESPACE_HPP_
 
-
 class NetNamepaceTest{
-public:
+ public:
 	NetNamepaceTest();
 	~NetNamepaceTest();
 
 	int start();
 
-private:
-
+ private:
 };
 
 

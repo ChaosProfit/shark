@@ -16,20 +16,19 @@
 #include "cliClient.hpp"
 
 namespace shark {
+class Shark {
+ public:
+	int process(int argc, char *argv[]);
+	Shark();
+	~Shark();
 
-	class Shark {
-	public:
-		int process(int argc, char *argv[]);
-		Shark();
-		~Shark();
+ private:
+	int retProcess(int type, const char *ret);
 
-	private:
-		int retProcess(int type, const char *ret);
-
-		int timeOutProcess();
-		CliClient *cliClient = NULL;
-		Option *option = NULL;
-	};
-}
+	int timeOutProcess();
+	CliClient *cliClient = NULL;
+	Option *option = NULL;
+};
+}  // namespace shark
 
 #endif /* SHARK_SHARK_HPP_ */

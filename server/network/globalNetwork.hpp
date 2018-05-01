@@ -11,26 +11,25 @@
 #include "config/globalConfig.hpp"
 
 namespace shark {
+class GlobalNetwork {
+ public:
+	explicit GlobalNetwork(NetworkConfig &cfg);
+	~GlobalNetwork();
 
-	class GlobalNetwork {
-	public:
-		GlobalNetwork(NetworkConfig &cfg);
-		~GlobalNetwork();
+ private:
+	int flagGet(char *flagPath, int &value);
+	int flagSet(char *flagPath, int value);
+	int bridgeIptablesInit();
+	int bridgeIptablesExit();
+	int bridgeInit();
+	int bridgeExit();
 
-	private:
-		int flagGet(char *flagPath, int &value);
-		int flagSet(char *flagPath, int value);
-		int bridgeIptablesInit();
-		int bridgeIptablesExit();
-		int bridgeInit();
-		int bridgeExit();
+	NetworkConfig nCfg;
 
-		NetworkConfig nCfg;
-
-		const char sharkChain[32] = "SHARK";
-		int originalIpv4ForwardFlag = 0;
-	};
-}
+	const char sharkChain[32] = "SHARK";
+	int originalIpv4ForwardFlag = 0;
+};
+}  // namespace shark
 
 
 #endif /* NETWORK_GLOBALNETWORK_HPP_ */
