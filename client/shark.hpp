@@ -15,9 +15,9 @@
 #include "option.hpp"
 #include "cliClient.hpp"
 
-namespace shark{
+namespace shark {
 
-	class Shark{
+	class Shark {
 	public:
 		int process(int argc, char *argv[]);
 		Shark();

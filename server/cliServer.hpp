@@ -20,22 +20,22 @@
 #include "utils/sepoll.hpp"
 #include "utils/command.hpp"
 
-namespace shark{
+namespace shark {
 
-	typedef enum{
+	typedef enum {
 		INTERFACE_NONE = 0,
 		INTERFACE_SYNC,
 		INTERFACE_ASYNC
 	}INTERFACE_TYPE;
 
-	class CliServer{
+	class CliServer {
 	public:
 		CliServer(ContainerPool &cPool);
 		~CliServer();
 
 		int cliRecv();
 		int retSend(const void *data, int size);
-		void *getDataPtr(){
+		void *getDataPtr() {
 			return rcvBuf;
 		};
 

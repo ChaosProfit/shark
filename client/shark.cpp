@@ -23,32 +23,32 @@
 #include "option.hpp"
 #include "utils/json.hpp"
 
-shark::Shark::Shark(){
+shark::Shark::Shark() {
 	cliClient = new CliClient();
 	option = new Option();
 }
 
-shark::Shark::~Shark(){
+shark::Shark::~Shark() {
 	delete cliClient;
 	delete option;
 }
 
-int shark::Shark::timeOutProcess(){
+int shark::Shark::timeOutProcess() {
 	fprintf(stdout, "time out\n");
 	return 0;
 }
 
-int shark::Shark::retProcess(int type, const char* ret){
+int shark::Shark::retProcess(int type, const char* ret) {
 	sharkLog(SHARK_LOG_DEBUG, "ret:%s\n", ret);
 	nlohmann::json retJson = nlohmann::json::parse(std::string(ret));
 	nlohmann::json dataJson;
 
-	if((retJson["ret"].empty() == 1) || (retJson["ret"].get<int>() < 0)){
+	if((retJson["ret"].empty() == 1) || (retJson["ret"].get<int>() < 0)) {
 		fprintf(stdout, "Process failed\n");
 		return -1;
 	}
 
-	switch(type){
+	switch(type) {
 	case COMMAND_CREATE:
 		break;
 
@@ -59,7 +59,7 @@ int shark::Shark::retProcess(int type, const char* ret){
 		break;
 
 	case COMMAND_LIST:
-		if(retJson["data"].empty() == 1){
+		if(retJson["data"].empty() == 1) {
 			std::cout << "List process failed\n";
 			return -1;
 		}
@@ -68,7 +68,7 @@ int shark::Shark::retProcess(int type, const char* ret){
 		sharkLog(SHARK_LOG_DEBUG, "dataType:%d\n", dataJson.type());
 
 		std::cout << "Id" << "\n";
-		for (nlohmann::json::iterator it = dataJson.begin(); it != dataJson.end(); ++it) {
+		for (nlohmann::json::iterator it = dataJson.begin(); it != dataJson.end(); ++it)  {
 			std::string tmp = (*it).dump();
 			std::cout << tmp.substr(1, tmp.size() - 2) << "\n";
 		}
@@ -81,13 +81,13 @@ int shark::Shark::retProcess(int type, const char* ret){
 	return 0;
 }
 
-int shark::Shark::process(int argc, char *argv[]){
+int shark::Shark::process(int argc, char *argv[]) {
 	const char *dataToSend = option->process(argc, argv);
 
-	if(dataToSend != NULL){
+	if(dataToSend != NULL) {
 		sharkLog(SHARK_LOG_DEBUG, "result:%s\n", dataToSend);
 		const char *dataPtr = (const char *)cliClient->dataSend(dataToSend, strlen(dataToSend));
-		if(dataPtr == NULL){
+		if(dataPtr == NULL) {
 			sharkLog(SHARK_LOG_DEBUG, "data send failed\n");
 			return -1;
 		}
@@ -101,7 +101,7 @@ int shark::Shark::process(int argc, char *argv[]){
 	return 0;
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
 	sharkLogInit("/run/shark/shark.log");
 
 	shark::Shark shark;

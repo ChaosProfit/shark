@@ -16,13 +16,13 @@
 /*
 	Cgroup class defines all the cgroup operations.
 */
-namespace shark{
+namespace shark {
 
-	typedef struct{
+	typedef struct {
 		std::string id;
 	}CgroupConfig;
 
-	class Cgroup{
+	class Cgroup {
 	public:
 		Cgroup();
 		~Cgroup();
@@ -47,7 +47,7 @@ namespace shark{
 		int getValue();
 
 
-		std::vector<std::string> subModules = {"devices", "perf_event", "memory", "cpuset",
+		std::vector<std::string> subModules =  {"devices", "perf_event", "memory", "cpuset",
 											   "blkio", "cpu,cpuacct", "net_cls,net_prio",
 										       "freezer", "pids", "systemd"};
 

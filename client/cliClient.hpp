@@ -15,15 +15,15 @@
 #include <deque>
 #include <memory>
 
-namespace shark{
+namespace shark {
 
-	typedef enum{
+	typedef enum {
 		INTERFACE_NONE = 0,
 		INTERFACE_SYNC,
 		INTERFACE_ASYNC
 	}INTERFACE_TYPE;
 
-	class CliClient{
+	class CliClient {
 	public:
 		CliClient();
 		~CliClient();

@@ -21,7 +21,7 @@
 
 
 shark::ContainerPool::ContainerPool(SharkConfig &cfg):
-sCfg(cfg){
+sCfg(cfg) {
 
 	cgroup = std::make_shared<Cgroup>();
 
@@ -29,8 +29,8 @@ sCfg(cfg){
 	return;
 };
 
-shark::ContainerPool::~ContainerPool(){
-	for(auto container=clist.begin(); container != clist.end(); container++){
+shark::ContainerPool::~ContainerPool() {
+	for(auto container=clist.begin(); container != clist.end(); container++) {
 		delete *container;
 		clist.remove(*container);
 	}
@@ -39,7 +39,7 @@ shark::ContainerPool::~ContainerPool(){
 	return;
 }
 
-std::string shark::ContainerPool::retToJson(int ret){
+std::string shark::ContainerPool::retToJson(int ret) {
 	nlohmann::json retJson;
 
 	retJson["ret"] = ret;
@@ -48,7 +48,7 @@ std::string shark::ContainerPool::retToJson(int ret){
 	return retJson.dump();
 }
 
-std::string shark::ContainerPool::retToJson(std::string data){
+std::string shark::ContainerPool::retToJson(std::string data) {
 	nlohmann::json retJson;
 
 	retJson["ret"] = 0;
@@ -58,13 +58,13 @@ std::string shark::ContainerPool::retToJson(std::string data){
 	return retJson.dump();
 }
 
-std::string shark::ContainerPool::listCmdProcess(){
+std::string shark::ContainerPool::listCmdProcess() {
 	std::string retStr;
 
 	std::list<std::string> slist;
 	auto clist = listContainer();
 
-	for(auto c=clist.begin(); c != clist.end(); c++){
+	for(auto c=clist.begin(); c != clist.end(); c++) {
 		slist.push_back((*c)->getId());
 		sharkLog(SHARK_LOG_DEBUG, "Id:%s\n",(*c)->getId().data());
 	}
@@ -74,12 +74,12 @@ std::string shark::ContainerPool::listCmdProcess(){
 	return retJson.dump();
 }
 
-std::string shark::ContainerPool::cmdProcess(Command *cmd){
+std::string shark::ContainerPool::cmdProcess(Command *cmd) {
 	int ret = 0;
 	std::string retStr;
 	std::string data;
 
-	switch(cmd->type){
+	switch(cmd->type) {
 	case COMMAND_CREATE:
 		ret = createContainer(*cmd);
 		sharkLog(SHARK_LOG_DEBUG, "create_ret:%d\n", ret);
@@ -118,10 +118,10 @@ std::string shark::ContainerPool::cmdProcess(Command *cmd){
 	return retStr;
 }
 
-int shark::ContainerPool::execContainer(struct Command &cmd){
+int shark::ContainerPool::execContainer(struct Command &cmd) {
 	auto c = getContainer(cmd.cfg.id);
 
-	if(c == NULL){
+	if(c == NULL) {
 		sharkLog(SHARK_LOG_ERR, "execContainer failed\n");
 		return -1;
 	}
@@ -132,25 +132,25 @@ int shark::ContainerPool::execContainer(struct Command &cmd){
 	return 0;
 };
 
-int shark::ContainerPool::createContainer(struct Command &cmd){
+int shark::ContainerPool::createContainer(struct Command &cmd) {
 	int ret = 0;
 
 	Container *c = new Container(cmd.cfg, sCfg, *cgroup);
 
 	ret = c->start();
-	if(ret < 0){
+	if(ret < 0) {
 		sharkLog(SHARK_LOG_ERR, "container start failed\n");
 		return ret;
 	}
 
-	if(getContainer(c->getId()) != NULL){
+	if(getContainer(c->getId()) != NULL) {
 		sharkLog(SHARK_LOG_ERR, "addContainer %s faild\n", c->getId().data());
 		return -1;
 	}
 
 	clist.push_back(c);
 
-	if(cmd.cfg.execCmd.size() > 0){
+	if(cmd.cfg.execCmd.size() > 0) {
 		c->cmdSend(cmd.cfg.execCmd);
 	}
 
@@ -158,9 +158,9 @@ int shark::ContainerPool::createContainer(struct Command &cmd){
 	return ret;
 }
 
-int shark::ContainerPool::delContainer(struct Command &cmd){
+int shark::ContainerPool::delContainer(struct Command &cmd) {
 	Container *cPtr = getContainer(cmd.cfg.id);
-	if(cPtr == NULL){
+	if(cPtr == NULL) {
 		sharkLog(SHARK_LOG_ERR, "delContainer %s faild\n", cmd.cfg.id.data());
 		return -1;
 	}
@@ -172,9 +172,9 @@ int shark::ContainerPool::delContainer(struct Command &cmd){
 	return 0;
 }
 
-shark::Container *shark::ContainerPool::getContainer(std::string &id){
-	for(auto c = clist.begin(); c != clist.end(); c++){
-		if(id == (*c)->getId()){
+shark::Container *shark::ContainerPool::getContainer(std::string &id) {
+	for(auto c = clist.begin(); c != clist.end(); c++) {
+		if(id == (*c)->getId()) {
 			sharkLog(SHARK_LOG_DEBUG, "getContainer %s successfully\n", id.data());
 			return *c;
 		}
@@ -184,6 +184,6 @@ shark::Container *shark::ContainerPool::getContainer(std::string &id){
 	return NULL;
 }
 
-std::list<shark::Container *>& shark::ContainerPool::listContainer(){
+std::list<shark::Container *>& shark::ContainerPool::listContainer() {
 	return clist;
 }

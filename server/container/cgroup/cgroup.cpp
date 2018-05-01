@@ -19,30 +19,30 @@
 #include "cgroup.hpp"
 #include "utils/log.hpp"
 
-int shark::Cgroup::setIntValue(const char *path, int value, bool append){
-	char tmp[36] = {0};
+int shark::Cgroup::setIntValue(const char *path, int value, bool append) {
+	char tmp[36] =  {0};
 
 	snprintf(tmp, 36, "%d", value);
 
 	return setStrValue(path, tmp, append);
 }
 
-int shark::Cgroup::setStrValue(const char *path, const char *value, bool append){
+int shark::Cgroup::setStrValue(const char *path, const char *value, bool append) {
 	int ret = 0;
 	int flags = O_WRONLY;
 
-	if(append == true){
+	if(append == true) {
 		flags |= O_APPEND;
 	}
 
 	int fd = open(path, flags);
-	if(fd < 0){
+	if(fd < 0) {
 		sharkLog(SHARK_LOG_ERR, "open %s failed\n", path);
 		return -1;
 	}
 
 	ret = write(fd, value, strlen(value));
-	if(ret < 0){
+	if(ret < 0) {
 		close(fd);
 		sharkLog(SHARK_LOG_ERR, "write %s to %s failed\n", value, path);
 		return -1;
@@ -54,7 +54,7 @@ int shark::Cgroup::setStrValue(const char *path, const char *value, bool append)
 	return 0;
 }
 
-int shark::Cgroup::setCpuSelect(std::string id, int cpuNum){
+int shark::Cgroup::setCpuSelect(std::string id, int cpuNum) {
 	std::string path = cgroupPath + "cpuset/shark/" + id + "/cpuset.cpus";
 
 	int ret = setIntValue(path.data(), cpuNum, false);
@@ -64,7 +64,7 @@ int shark::Cgroup::setCpuSelect(std::string id, int cpuNum){
 	return 0;
 }
 
-int shark::Cgroup::setCpuQuota(std::string id, int cpuQuota){
+int shark::Cgroup::setCpuQuota(std::string id, int cpuQuota) {
 	std::string path = cgroupPath + "cpu,cpuacct/" + "/cpu.cfs_quota_us";
 
 	int ret = setIntValue(path.data(), cpuQuota, false);
@@ -74,7 +74,7 @@ int shark::Cgroup::setCpuQuota(std::string id, int cpuQuota){
 	return 0;
 }
 
-int shark::Cgroup::setMemQuota(std::string id, int memQuota){
+int shark::Cgroup::setMemQuota(std::string id, int memQuota) {
 	std::string path = cgroupPath + "memory/" + "/memory.limit_in_bytes";
 
 	int ret = setIntValue(path.data(), memQuota, false);
@@ -84,18 +84,18 @@ int shark::Cgroup::setMemQuota(std::string id, int memQuota){
 	return 0;
 }
 
-int shark::Cgroup::addTask(std::string id, int pid){
+int shark::Cgroup::addTask(std::string id, int pid) {
 	int ret = 0;
 	std::string tasksPath;
-	char pidBuf[36] = {0};
+	char pidBuf[36] =  {0};
 
 	snprintf(pidBuf, 36, "%d\n", pid);
 
-	for(auto item = subModules.begin(); item != subModules.end(); item++){
+	for(auto item = subModules.begin(); item != subModules.end(); item++) {
 		tasksPath = cgroupPath + *item + "/" + id + "/" + "tasks";
 
 		ret = setStrValue(tasksPath.data(), pidBuf, true);
-		if(ret < 0){
+		if(ret < 0) {
 			sharkLog(SHARK_LOG_DEBUG, "update %s to %s failed\n", pidBuf, tasksPath.data());
 		}
 	}
@@ -104,14 +104,14 @@ int shark::Cgroup::addTask(std::string id, int pid){
 	return 0;
 }
 
-int shark::Cgroup::addLeaf(std::string &id){
+int shark::Cgroup::addLeaf(std::string &id) {
 	int ret = 0;
 	std::string dirPath;
 
-	for(auto item = subModules.begin(); item != subModules.end(); item++){
+	for(auto item = subModules.begin(); item != subModules.end(); item++) {
 		dirPath = cgroupPath + *item + "/" + id;
 		ret = mkdir(dirPath.data(), 0777);
-		if(ret < 0){
+		if(ret < 0) {
 			sharkLog(SHARK_LOG_ERR, "makedir %s failed, errno:%d\n", dirPath.data(), errno);
 		}
 	}
@@ -120,14 +120,14 @@ int shark::Cgroup::addLeaf(std::string &id){
 	return 0;
 }
 
-int shark::Cgroup::delLeaf(std::string id){
+int shark::Cgroup::delLeaf(std::string id) {
 	int ret = 0;
 	std::string dirPath;
 
-	for(auto item = subModules.begin(); item != subModules.end(); item++){
+	for(auto item = subModules.begin(); item != subModules.end(); item++) {
 		dirPath = cgroupPath + *item + "/" + id;
 		ret = rmdir(dirPath.data());
-		if(ret < 0){
+		if(ret < 0) {
 			sharkLog(SHARK_LOG_ERR, "makedir %s failed, errno:%d\n", dirPath.data(), errno);
 		}
 	}
@@ -136,15 +136,15 @@ int shark::Cgroup::delLeaf(std::string id){
 	return 0;
 }
 
-shark::Cgroup::Cgroup(){
+shark::Cgroup::Cgroup() {
 	int ret = 0;
 
 	std::string dirPath;
-	for(auto item = subModules.begin(); item != subModules.end(); item++){
+	for(auto item = subModules.begin(); item != subModules.end(); item++) {
 		dirPath = cgroupPath + *item;
 		dirPath.append("/shark");
 		ret = mkdir(dirPath.data(), 0777);
-		if(ret < 0){
+		if(ret < 0) {
 			sharkLog(SHARK_LOG_ERR, "makedir %s failed, errno:%d\n", dirPath.data(), errno);
 		}
 	}
@@ -153,14 +153,14 @@ shark::Cgroup::Cgroup(){
 	return;
 };
 
-shark::Cgroup::~Cgroup(){
+shark::Cgroup::~Cgroup() {
 	int ret = 0;
 	std::string dirPath;
-	for(auto item = subModules.begin(); item != subModules.end(); item++){
+	for(auto item = subModules.begin(); item != subModules.end(); item++) {
 		dirPath = cgroupPath + *item;
 		dirPath.append("/shark");
 		ret = rmdir(dirPath.data());
-		if(ret < 0){
+		if(ret < 0) {
 			sharkLog(SHARK_LOG_ERR, "makedir %s failed, errno:%d\n", dirPath.data(), errno);
 		}
 	}

@@ -11,15 +11,15 @@
 #include <string>
 #include <exception>
 
-class SharkException : public std::exception{
+class SharkException : public std::exception {
 public:
-	SharkException(std::string input) : msg(input){
+	SharkException(std::string input) : msg(input) {
 	};
 
-	SharkException(const char *input) : msg(input){
+	SharkException(const char *input) : msg(input) {
 	};
 
-	const char* what(){return msg.data();}
+	const char* what() {return msg.data();}
 private:
 	std::string msg;
 };

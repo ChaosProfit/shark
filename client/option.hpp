@@ -8,9 +8,9 @@
 #ifndef OPTION_HPP_
 #define OPTION_HPP_
 
-namespace shark{
+namespace shark {
 
-	typedef enum {
+	typedef enum  {
 		COMMAND_BLANK = 0,
 		COMMAND_CREATE,
 		COMMAND_DELETE,
@@ -19,7 +19,7 @@ namespace shark{
 		COMMAND_MAX
 	} COMMAND_TYPE;
 
-	typedef struct{
+	typedef struct {
 		std::string ipAddr;
 		std::string netBandwidth;
 		std::string mountPath;
@@ -29,21 +29,21 @@ namespace shark{
 		std::string memQuota;
 	}Config;
 
-	typedef struct{
+	typedef struct {
 		std::string id;
 		COMMAND_TYPE type;
 		Config cfg;
 		std::string execCmd;
 	} Command;
 
-	class Option{
+	class Option {
 	public:
 		const char *process(int argc, char *argv[]);
-		Command& getCmd(){
+		Command& getCmd() {
 			return cmd;
 		};
 
-		std::string& getCmdJson(){
+		std::string& getCmdJson() {
 			return jsonCmd;
 		};
 

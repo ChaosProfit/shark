@@ -10,9 +10,9 @@
 
 #include "config/globalConfig.hpp"
 
-namespace shark{
+namespace shark {
 
-	class GlobalNetwork{
+	class GlobalNetwork {
 	public:
 		GlobalNetwork(NetworkConfig &cfg);
 		~GlobalNetwork();

@@ -11,18 +11,18 @@
 #include "utils/misc.hpp"
 #include "utils/log.hpp"
 
-int shark::GlobalNetwork::flagGet(char *flagPath, int &value){
+int shark::GlobalNetwork::flagGet(char *flagPath, int &value) {
 	int ret = 0;
 
 	FILE *fPtr = fopen(flagPath, "r");
-	if(fPtr == NULL){
+	if(fPtr == NULL) {
 		sharkLog(SHARK_LOG_ERR, "%s open failed\n", flagPath);
 		return -1;
 	}
 
-	char buf[36] = {0};
+	char buf[36] =  {0};
 	ret = fread(buf, 1, 36, fPtr);
-	if(ret < 0){
+	if(ret < 0) {
 		sharkLog(SHARK_LOG_ERR, "%s read failed\n", flagPath);
 		fclose(fPtr);
 		return -1;
@@ -36,20 +36,20 @@ int shark::GlobalNetwork::flagGet(char *flagPath, int &value){
 	return ret;
 }
 
-int shark::GlobalNetwork::flagSet(char *flagPath, int value){
+int shark::GlobalNetwork::flagSet(char *flagPath, int value) {
 	int ret = 0;
 
 	FILE *fPtr = fopen(flagPath, "w");
-	if(fPtr == NULL){
+	if(fPtr == NULL) {
 		sharkLog(SHARK_LOG_ERR, "%s open failed\n", flagPath);
 		return -1;
 	}
 
-	char buf[36] = {0};
+	char buf[36] =  {0};
 	snprintf(buf, 36, "%d", value);
 
 	ret = fwrite(buf, 1, 36, fPtr);
-	if(ret < 0){
+	if(ret < 0) {
 		sharkLog(SHARK_LOG_ERR, "%s write failed\n", flagPath);
 		fclose(fPtr);
 		return -1;
@@ -61,7 +61,7 @@ int shark::GlobalNetwork::flagSet(char *flagPath, int value){
 	return ret;
 }
 
-int shark::GlobalNetwork::bridgeIptablesInit(){
+int shark::GlobalNetwork::bridgeIptablesInit() {
 	int ret = 0;
 
 	flagGet("/proc/sys/net/ipv4/ip_forward", originalIpv4ForwardFlag);
@@ -77,10 +77,10 @@ int shark::GlobalNetwork::bridgeIptablesInit(){
 	ret = cmdExecSync("iptables -t filter -A FORWARD -i %s ! -o %s -j ACCEPT", nCfg.bridge.name.data(), nCfg.bridge.name.data());
 	ret = cmdExecSync("iptables -t filter -A FORWARD ! -i %s -o %s -j ACCEPT", nCfg.bridge.name.data(), nCfg.bridge.name.data());
 
-	if(nCfg.ccFlag == true){
+	if(nCfg.ccFlag == true) {
 		ret = cmdExecSync("iptables -t filter -A FORWARD -i %s -o %s -j ACCEPT", nCfg.bridge.name.data(), nCfg.bridge.name.data());
 	}
-	else{
+	else {
 		ret = cmdExecSync("iptables -t filter -A FORWARD -i %s -o %s -j DROP", nCfg.bridge.name.data(), nCfg.bridge.name.data());
 	}
 
@@ -88,13 +88,13 @@ int shark::GlobalNetwork::bridgeIptablesInit(){
 	return ret;
 }
 
-int shark::GlobalNetwork::bridgeIptablesExit(){
+int shark::GlobalNetwork::bridgeIptablesExit() {
 	int ret = 0;
 
-	if(nCfg.ccFlag == true){
+	if(nCfg.ccFlag == true) {
 		ret = cmdExecSync("iptalbes -t filter -D FORWARD -i %s -o %s -j ACCEPT", nCfg.bridge.name.data(), nCfg.bridge.name.data());
 	}
-	else{
+	else {
 		ret = cmdExecSync("iptalbes -t filter -D FORWARD -i %s -o %s -j DROP", nCfg.bridge.name.data(), nCfg.bridge.name.data());
 	}
 
@@ -115,7 +115,7 @@ int shark::GlobalNetwork::bridgeIptablesExit(){
 	return ret;
 }
 
-int shark::GlobalNetwork::bridgeInit(){
+int shark::GlobalNetwork::bridgeInit() {
 	int ret = 0;
 
 	ret = cmdExecSync("ip link add name %s type bridge", nCfg.bridge.name.data());
@@ -133,7 +133,7 @@ int shark::GlobalNetwork::bridgeInit(){
 	return ret;
 }
 
-int shark::GlobalNetwork::bridgeExit(){
+int shark::GlobalNetwork::bridgeExit() {
 	int ret = 0;
 
 	ret = bridgeIptablesExit();
@@ -146,15 +146,15 @@ int shark::GlobalNetwork::bridgeExit(){
 }
 
 shark::GlobalNetwork::GlobalNetwork(NetworkConfig &cfg):
-nCfg(cfg){
+nCfg(cfg) {
 	int ret = 0;
 
-	if(nCfg.enable == false){
+	if(nCfg.enable == false) {
 		sharkLog(SHARK_LOG_DEBUG, "GlobalNetwork construct finished, disabled\n");
 		return;
 	}
 
-	switch(nCfg.type){
+	switch(nCfg.type) {
 	case NETWORK_BRIDGE:
 		ret = bridgeInit();
 		break;
@@ -166,15 +166,15 @@ nCfg(cfg){
 	sharkLog(SHARK_LOG_DEBUG, "GlobalNetwork construct successfully, ret:%d\n", ret);
 }
 
-shark::GlobalNetwork::~GlobalNetwork(){
+shark::GlobalNetwork::~GlobalNetwork() {
 	int ret = 0;
 
-	if(nCfg.enable == false){
+	if(nCfg.enable == false) {
 		sharkLog(SHARK_LOG_DEBUG, "Network destruct finished, disabled\n");
 		return;
 	}
 
-	switch(nCfg.type){
+	switch(nCfg.type) {
 	case NETWORK_BRIDGE:
 		ret = bridgeExit();
 		break;

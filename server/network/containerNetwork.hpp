@@ -11,8 +11,8 @@
 #include "config/containerConfig.hpp"
 #include <string>
 
-namespace shark{
-	class ContainerNetwork{
+namespace shark {
+	class ContainerNetwork {
 	public:
 		ContainerNetwork(std::string &sId, NetworkConfig &gnCfgArg, ContainerNetworkConfig &cnCfgArg);
 		~ContainerNetwork();

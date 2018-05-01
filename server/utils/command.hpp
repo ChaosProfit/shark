@@ -16,8 +16,8 @@
 
 #include "config/containerConfig.hpp"
 
-namespace shark{
-	typedef enum {
+namespace shark {
+	typedef enum  {
 		COMMAND_BLANK = 0,
 		COMMAND_CREATE,
 		COMMAND_DELETE,
@@ -26,7 +26,7 @@ namespace shark{
 		COMMAND_MAX
 	} COMMAND_TYPE;
 
-	struct Command{
+	struct Command {
 		COMMAND_TYPE type;
 		ContainerConfig cfg;
 	};

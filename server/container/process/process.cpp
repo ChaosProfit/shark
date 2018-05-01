@@ -17,7 +17,7 @@
 #include "utils/exceptions.hpp"
 #include "utils/log.hpp"
 
-int binExecCallback(void *args){
+int binExecCallback(void *args) {
 	int ret = 0;
 	shark::Process *process = (shark::Process *)args;
 	std::string &cmd = process->getExecCmd();
@@ -32,7 +32,7 @@ int binExecCallback(void *args){
 }
 
 shark::Process::Process(int stackSize, const char *cmd):\
-funcExecCallback(binExecCallback), stackSize(stackSize), cloneFlags(0){
+funcExecCallback(binExecCallback), stackSize(stackSize), cloneFlags(0) {
 	execCmd = cmd;
 	execFuncArg = this;
 	stackPtr = malloc(stackSize);
@@ -42,7 +42,7 @@ funcExecCallback(binExecCallback), stackSize(stackSize), cloneFlags(0){
 }
 
 shark::Process::Process(int stackSize, int (*execFunc)(void *args), void *objectPtr, int cloneFlags):\
-funcExecCallback(execFunc), stackSize(stackSize), cloneFlags(cloneFlags){
+funcExecCallback(execFunc), stackSize(stackSize), cloneFlags(cloneFlags) {
 
 	stackPtr = malloc(stackSize);
 	memset(stackPtr, 0, stackSize);
@@ -51,33 +51,33 @@ funcExecCallback(execFunc), stackSize(stackSize), cloneFlags(cloneFlags){
 	sharkLog(SHARK_LOG_DEBUG, "Process3 construct successfully\n");
 }
 
-shark::Process::~Process(){
+shark::Process::~Process() {
 	int ret = 0;
 
 	free(stackPtr);
 
-	for(auto item = childProcessList.begin(); item != childProcessList.end(); item++){
+	for(auto item = childProcessList.begin(); item != childProcessList.end(); item++) {
 		delete *item;
 	}
 
 	kill(pid, SIGTERM);
-	siginfo_t info = {0};
+	siginfo_t info =  {0};
 	ret = waitid(P_PID, pid, &info, WEXITED|WSTOPPED|__WCLONE);
 
 	sharkLog(SHARK_LOG_DEBUG, "process %d destruct successfully, ret:%d, err:%d\n", pid, ret, errno);
 	return;
 }
 
-int shark::Process::exec(){
+int shark::Process::exec() {
 	int ret = 0;
 
-   if(funcExecCallback == NULL){
+   if(funcExecCallback == NULL) {
 	   sharkLog(SHARK_LOG_ERR, "process exec failed\n");
 	   return -1;
    }
 
    ret = clone(funcExecCallback, stackTop(), cloneFlags, execFuncArg);
-	if(ret < 0){
+	if(ret < 0) {
 		sharkLog(SHARK_LOG_ERR, "child process created failed\n");
 		throw new SharkException("child process created failed");
 	}

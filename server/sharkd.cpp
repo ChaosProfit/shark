@@ -14,15 +14,15 @@
 #include "utils/log.hpp"
 #include "utils/misc.hpp"
 
-int shark::Sharkd::run(){
-	while(1){
+int shark::Sharkd::run() {
+	while(1) {
 		sleep(3);
 	}
 
 	return 0;
 }
 
-shark::Sharkd::Sharkd(){
+shark::Sharkd::Sharkd() {
 	std::shared_ptr<GlobalConfig> cfgReader = std::make_shared<GlobalConfig>();
 
 	sCfg = cfgReader->getConfig();
@@ -33,7 +33,7 @@ shark::Sharkd::Sharkd(){
 	sharkLog(SHARK_LOG_INFO, "Sharkd construct successfully\n");
 }
 
-shark::Sharkd::~Sharkd(){
+shark::Sharkd::~Sharkd() {
 	delete containerPool;
 	delete cliServer;
 	delete gNetwork;
@@ -41,7 +41,7 @@ shark::Sharkd::~Sharkd(){
 	sharkLog(SHARK_LOG_INFO, "Sharkd destruct successfully");
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
 
 	dirInit();
 	sharkLogInit("/run/shark/sharkd.log");

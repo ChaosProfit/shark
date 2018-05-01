@@ -18,9 +18,9 @@
 #include "utils/exceptions.hpp"
 #include "utils/log.hpp"
 
-shark::CliClient::CliClient(){
+shark::CliClient::CliClient() {
 	rcvBuf = malloc(RCV_BUF_SIZE);
-	if(rcvBuf == NULL){
+	if(rcvBuf == NULL) {
 		sharkLog(SHARK_LOG_ERR, "rcv buf malloc failed\n");
 		throw new SharkException("rcvBuf malloc failed");
 	}
@@ -30,8 +30,8 @@ shark::CliClient::CliClient(){
 	return;
 }
 
-shark::CliClient::~CliClient(){
-	if (rcvBuf != NULL){
+shark::CliClient::~CliClient() {
+	if (rcvBuf != NULL) {
 		free(rcvBuf);
 	}
 
@@ -39,13 +39,13 @@ shark::CliClient::~CliClient(){
 	return;
 }
 
-void* shark::CliClient::dataSend(const void *data, int dataSize){
+void* shark::CliClient::dataSend(const void *data, int dataSize) {
 	int ret = 0;
 	int comFd = 0;
 	struct sockaddr_un addr;
 
 	comFd = socket(AF_UNIX, SOCK_STREAM, 0);
-	if(comFd < 0){
+	if(comFd < 0) {
 		sharkLog(SHARK_LOG_ERR, "socket create failed\n");
 		throw new SharkException("interfaceFd socket failed");
 	}
@@ -55,13 +55,13 @@ void* shark::CliClient::dataSend(const void *data, int dataSize){
 	strncpy(addr.sun_path, SHARK_INTERFACE_PATH, sizeof(addr.sun_path) - 1);
 
 	ret = connect(comFd, (struct sockaddr *)&addr, sizeof(addr));
-	if(ret < 0){
+	if(ret < 0) {
 		sharkLog(SHARK_LOG_ERR, "socket connect failed, errno:%d\n", errno);
 		throw new SharkException("connect failed");
 	}
 
 	ret = send(comFd, data, dataSize, MSG_NOSIGNAL);
-	if(ret != (signed int)dataSize){
+	if(ret != (signed int)dataSize) {
 		sharkLog(SHARK_LOG_ERR, "cmd send failed\n");
 		throw new SharkException("Json Command send failed");
 	}
@@ -71,7 +71,7 @@ void* shark::CliClient::dataSend(const void *data, int dataSize){
 
 	memset(rcvBuf, 0, RCV_BUF_SIZE);
 	ret = recv(comFd, rcvBuf, RCV_BUF_SIZE, MSG_CMSG_CLOEXEC);
-	if(ret < 0){
+	if(ret < 0) {
 		sharkLog(SHARK_LOG_ERR, "recv failed,errno:%d\n", errno);
 		throw new SharkException("received failed");
 	}

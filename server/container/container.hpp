@@ -27,9 +27,9 @@
 /*
 	Container class defines a container.
 */
-namespace shark {
+namespace shark  {
 
-	class Container{
+	class Container {
 	public:
 		Container(ContainerConfig &cCfg, SharkConfig &sCfg, Cgroup &cgrp);
 		~Container();
@@ -47,12 +47,12 @@ namespace shark {
 		int cmdSend(std::string &execCmd);
 
 		/*get the id of the container*/
-		std::string& getId(){
+		std::string& getId() {
 			return cCfg.id;
 		};
 
 		/*get the read end of the manageProcessPipe*/
-		int getReadPipe() const{
+		int getReadPipe() const {
 			return manageProcessPipe[0];
 		}
 		/*add a process to the container*/
@@ -63,7 +63,7 @@ namespace shark {
 		int dftCfgInit();
 		int initManageProcess();
 		Process *manageProcess = NULL;
-		int manageProcessPipe[2] = {0};
+		int manageProcessPipe[2] =  {0};
 
 		std::string id;
 		std::string nameSpace;

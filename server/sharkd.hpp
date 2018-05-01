@@ -17,8 +17,8 @@
 #include "cliServer.hpp"
 #include "utils/threadQueue.hpp"
 
-namespace shark{
-	class Sharkd{
+namespace shark {
+	class Sharkd {
 	public:
 		Sharkd();
 		~Sharkd();

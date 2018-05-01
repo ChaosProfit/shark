@@ -15,32 +15,32 @@
 
 #include "utils/exceptions.hpp"
 
-namespace shark{
+namespace shark {
 
 	template <class Type>
-	class ThreadQueue{
+	class ThreadQueue {
 	public:
-		ThreadQueue(){
+		ThreadQueue() {
 			int ret = 0;
 			ret = pthread_cond_init(&newElementCond, NULL);
-			if(ret < 0){
+			if(ret < 0) {
 				throw new SharkException("pthread cond init fail");
 			}
 		};
 
-		~ThreadQueue(){
+		~ThreadQueue() {
 			pthread_cond_destroy(&newElementCond);
 		};
 
-		int put(Type element){
+		int put(Type element) {
 			clist.push_back(element);
 			pthread_cond_signal(&newElementCond);
 			return 0;
 		};
 
-		Type get(){
+		Type get() {
 			pthread_mutex_lock(&elementMutex);
-			if(clist.empty() == true){
+			if(clist.empty() == true) {
 				pthread_cond_wait(&newElementCond, &elementMutex);
 			}
 

@@ -13,43 +13,43 @@
 
 #include <memory>
 
-namespace shark{
+namespace shark {
 
-	typedef enum{
+	typedef enum {
 		NETWORK_NONE = 0,
 		NETWORK_BRIDGE,
 	} NETWORK_TYPE;
 
-	union IntegerArrary{
+	union IntegerArrary {
 		unsigned int integer;
 		unsigned char array[4];
 	};
-	typedef struct{
+	typedef struct {
 		std::string str;
 		union IntegerArrary value;
 		union IntegerArrary bdValue;
 		unsigned int mask;
 	}Ipv4Addr;
 
-	typedef struct{
+	typedef struct {
 		std::string name;
 		Ipv4Addr addr;
 	} Bridge;
 
-	typedef struct{
+	typedef struct {
 		bool enable;
 		NETWORK_TYPE type;
 		bool	ccFlag;
 		Bridge	bridge;
 	} NetworkConfig;
 
-	typedef struct{
+	typedef struct {
 		NetworkConfig net;
 	} SharkConfig;
 
 	int ipv4AddrPreprocess(Ipv4Addr &addr);
 
-	class GlobalConfig{
+	class GlobalConfig {
 	public:
 		GlobalConfig();
 		~GlobalConfig();

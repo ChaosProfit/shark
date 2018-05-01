@@ -8,8 +8,8 @@
 #ifndef SEPOLL_H_
 #define SEPOLL_H_
 
-namespace shark {
-	class Sepoll{
+namespace shark  {
+	class Sepoll {
 	public:
 		Sepoll();
 		~Sepoll();

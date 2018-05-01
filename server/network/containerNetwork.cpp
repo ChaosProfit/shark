@@ -10,7 +10,7 @@
 #include "utils/misc.hpp"
 #include "utils/log.hpp"
 
-int shark::ContainerNetwork::commonInit(){
+int shark::ContainerNetwork::commonInit() {
 	int ret = 0;
 	std::string netNs = "shark" + shortId;
 
@@ -32,7 +32,7 @@ int shark::ContainerNetwork::commonInit(){
 	return ret;
 }
 
-int shark::ContainerNetwork::commonExit(){
+int shark::ContainerNetwork::commonExit() {
 	int ret = 0;
 	std::string netNs = "shark" + shortId;
 
@@ -44,11 +44,11 @@ int shark::ContainerNetwork::commonExit(){
 	return ret;
 }
 
-int shark::ContainerNetwork::bandwidthSet(){
+int shark::ContainerNetwork::bandwidthSet() {
 	int ret = 0;
 	std::string netNs = "shark" + shortId;
 
-	if(netNs.size() == 0){
+	if(netNs.size() == 0) {
 		sharkLog(SHARK_LOG_DEBUG, "Container %s bandwidth not enabled\n", shortId.data());
 		return 0;
 	}
@@ -61,11 +61,11 @@ int shark::ContainerNetwork::bandwidthSet(){
 	return ret;
 }
 
-int shark::ContainerNetwork::bandwidthClear(){
+int shark::ContainerNetwork::bandwidthClear() {
 	int ret = 0;
 	std::string netNs = "shark" + shortId;
 
-	if(netNs.size() == 0){
+	if(netNs.size() == 0) {
 		sharkLog(SHARK_LOG_DEBUG, "Container %s bandwidth not enabled\n", shortId.data());
 		return 0;
 	}
@@ -78,7 +78,7 @@ int shark::ContainerNetwork::bandwidthClear(){
 	return ret;
 }
 
-int shark::ContainerNetwork::bridgeInit(){
+int shark::ContainerNetwork::bridgeInit() {
 	int ret = 0;
 	std::string netNs = "shark" + shortId;
 
@@ -88,29 +88,29 @@ int shark::ContainerNetwork::bridgeInit(){
 	return ret;
 }
 
-int shark::ContainerNetwork::bridgeExit(){
+int shark::ContainerNetwork::bridgeExit() {
 	sharkLog(SHARK_LOG_DEBUG, "Container %s bridge exit\n", shortId.data());
 	return 0;
 }
 
 shark::ContainerNetwork::ContainerNetwork(std::string &sId, NetworkConfig &gnCfgArg, ContainerNetworkConfig &cnCfgArg):
-shortId(sId), gnCfg(gnCfgArg), cnCfg(cnCfgArg){
+shortId(sId), gnCfg(gnCfgArg), cnCfg(cnCfgArg) {
 	int ret = 0;
 
-	if(gnCfg.enable == false){
+	if(gnCfg.enable == false) {
 		sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d construct finished, Network disabled\n", shortId.data(), gnCfg.type);
 		return;
 	}
 
 	ret = ipv4AddrPreprocess(cnCfg.addr);
-	if(ret < 0){
+	if(ret < 0) {
 		sharkLog(SHARK_LOG_DEBUG, "%s preprocess failed\n", cnCfg.addr.str.data());
 		return;
 	}
 
 	ret = commonInit();
 
-	switch(gnCfg.type){
+	switch(gnCfg.type) {
 	case NETWORK_BRIDGE:
 		ret = bridgeInit();
 		break;
@@ -123,15 +123,15 @@ shortId(sId), gnCfg(gnCfgArg), cnCfg(cnCfgArg){
 	return;
 }
 
-shark::ContainerNetwork::~ContainerNetwork(){
+shark::ContainerNetwork::~ContainerNetwork() {
 	int ret = 0;
 
-	if(gnCfg.enable == false){
+	if(gnCfg.enable == false) {
 		sharkLog(SHARK_LOG_DEBUG, "Container %s Network %d destruct finished, Network disabled\n", shortId.data(), gnCfg.type);
 		return;
 	}
 
-	switch(gnCfg.type){
+	switch(gnCfg.type) {
 	case NETWORK_BRIDGE:
 		bridgeExit();
 		break;

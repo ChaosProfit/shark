@@ -17,55 +17,55 @@
 #include "option.hpp"
 #include "utils/json.hpp"
 
-static struct option sharkOptions[] = {
-												{"command",  required_argument, 0, 'c'},
-												{"exec-cmd",  required_argument, 0, 'e'},
-												{"id",  required_argument, 0, 0},
-												{"addr",  required_argument, 0, 0},
-												{"net-bandwidth",  required_argument, 0, 0},
-												{"mount-type",  required_argument, 0, 0},
-												{"cpu-set",  required_argument, 0, 0},
-												{"cpu-quota",  required_argument, 0, 0},
-												{"mem-quota",  required_argument, 0, 0},
-												{0,	0,	0,	0}
+static struct option sharkOptions[] =  {
+												 {"command",  required_argument, 0, 'c'},
+												 {"exec-cmd",  required_argument, 0, 'e'},
+												 {"id",  required_argument, 0, 0},
+												 {"addr",  required_argument, 0, 0},
+												 {"net-bandwidth",  required_argument, 0, 0},
+												 {"mount-type",  required_argument, 0, 0},
+												 {"cpu-set",  required_argument, 0, 0},
+												 {"cpu-quota",  required_argument, 0, 0},
+												 {"mem-quota",  required_argument, 0, 0},
+												 {0,	0,	0,	0}
 											};
 
-const char *shark::Option::process(int argc, char *argv[]){
+const char *shark::Option::process(int argc, char *argv[]) {
 	int optionIndex = 0;
 	int cnt = 0;
 
-	if(argc == 1){
+	if(argc == 1) {
 		printHelp();
 
 		sharkLog(SHARK_LOG_DEBUG, "optionProcess successfully\n");
 		return NULL;
 	}
 
-	while((cnt = getopt_long(argc, argv, "c:e:", sharkOptions, &optionIndex)) != -1){
-		switch(cnt){
+	while((cnt = getopt_long(argc, argv, "c:e:", sharkOptions, &optionIndex)) != -1) {
+		switch(cnt) {
 		case 0:
-			if (strcmp(sharkOptions[optionIndex].name, "id") == 0){
+			if (strcmp(sharkOptions[optionIndex].name, "id") == 0) {
 				cmd.id = optarg;
 			}
-			else if(strcmp(sharkOptions[optionIndex].name, "addr") == 0){
+			else if(strcmp(sharkOptions[optionIndex].name, "addr") == 0) {
 				cmd.cfg.ipAddr = optarg;
 			}
-			else if(strcmp(sharkOptions[optionIndex].name, "net-bandwidth") == 0){
+			else if(strcmp(sharkOptions[optionIndex].name, "net-bandwidth") == 0) {
 				cmd.cfg.netBandwidth = optarg;
 			}
-			else if(strcmp(sharkOptions[optionIndex].name, "cpu-select") == 0){
+			else if(strcmp(sharkOptions[optionIndex].name, "cpu-select") == 0) {
 				cmd.cfg.cpuSelect = optarg;
 			}
-			else if(strcmp(sharkOptions[optionIndex].name, "cpu-quota") == 0){
+			else if(strcmp(sharkOptions[optionIndex].name, "cpu-quota") == 0) {
 					cmd.cfg.cpuQuota = optarg;
 				}
-			else if(strcmp(sharkOptions[optionIndex].name, "mem-quota") == 0){
+			else if(strcmp(sharkOptions[optionIndex].name, "mem-quota") == 0) {
 				cmd.cfg.memQuota = optarg;
 			}
-			else if(strcmp(sharkOptions[optionIndex].name, "mount-type") == 0){
+			else if(strcmp(sharkOptions[optionIndex].name, "mount-type") == 0) {
 				cmd.cfg.mountType = optarg;
 			}
-			else{
+			else {
  				sharkLog(SHARK_LOG_ERR, "unknown Options\n");
 				throw new SharkException("unknown Options");
 			}
@@ -73,19 +73,19 @@ const char *shark::Option::process(int argc, char *argv[]){
 			break;
 
 		case 'c':
-			if(strcmp(optarg, "exec") == 0){
+			if(strcmp(optarg, "exec") == 0) {
 				cmd.type = COMMAND_EXEC;
 			}
-			else if(strcmp(optarg, "create") == 0){
+			else if(strcmp(optarg, "create") == 0) {
 				cmd.type = COMMAND_CREATE;
 			}
-			else if(strcmp(optarg, "list") == 0){
+			else if(strcmp(optarg, "list") == 0) {
 				cmd.type = COMMAND_LIST;
 			}
-			else if(strcmp(optarg, "delete") == 0){
+			else if(strcmp(optarg, "delete") == 0) {
 				cmd.type = COMMAND_DELETE;
 			}
-			else{
+			else {
 				sharkLog(SHARK_LOG_ERR, "unknown Command Type\n");
 				throw new SharkException("unknown Command Type");
 			}
@@ -110,7 +110,7 @@ const char *shark::Option::process(int argc, char *argv[]){
 	return jsonCmd.data();
 }
 
-int shark::Option::printHelp(){
+int shark::Option::printHelp() {
 	std::cout << "-c --command command type. The supported cmd type: exec create list delete" <<std::endl;
 	std::cout << "--id the container Id." <<std::endl;
 	std::cout << "-e --execCmd the name of exec bin, it does not support paras now." <<std::endl;
@@ -124,7 +124,7 @@ int shark::Option::printHelp(){
 	return 0;
 }
 
-std::string shark::Option::cmdGenerate(Command &opt){
+std::string shark::Option::cmdGenerate(Command &opt) {
 	nlohmann::json cmd;
 
 	cmd["type"] = (int)opt.type;
